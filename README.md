@@ -3,6 +3,8 @@
 
 _En construcción_
 
+Disponible en: [http://dataintelligence.cl/shiny/visualizador_movilidad_google](http://dataintelligence.cl/shiny/visualizador_movilidad_google)
+
 Bastián Olea Herrera
 Analista de datos, DataUC, 
 Facultad de matemáticas, Universidad Católica
