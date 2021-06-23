@@ -1,33 +1,51 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
-# Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("Visualizador de movilidad"),
 
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
+    #selectores ----
+    fluidRow(
+        column(12,
+               selectInput("region",
+                           label = "Seleccione su región",
+                           choices = regiones
+               ),
+               
+               selectInput("comuna",
+                           label = "Seleccione su comuna",
+                           choices = NULL
+               )
         )
+    ),
+    
+    #obtonera ----
+    fluidRow(
+        column(12,
+               shinyWidgets::radioGroupButtons("selector_unidad_geo",
+                                               label = "Elegir nivel a graficar",
+                                               choices = c("Región", "Provincia"),
+                                               selected = "Región",
+                                               justified = TRUE,
+                                               width = "90%")
+        ),
+        
+        column(12,
+               shinyWidgets::pickerInput("sector",
+                           label = "Seleccione un sector",
+                           multiple = TRUE,
+                           choices = sectores,
+                           width = "90%"
+               )
+        ),
+    ),
+    
+    #gráfico ----
+    fluidRow(
+        column(12,
+         plotOutput("grafico_basico")      
+        )
+        
     )
 ))

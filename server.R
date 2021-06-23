@@ -1,26 +1,77 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
-# Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
-    output$distPlot <- renderPlot({
-
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
-
+    #filtrar comunas ----
+    observeEvent(input$region, {
+        req(input$region != "")
+        
+        comunas_filtradas <- provincias_comunas %>% 
+            #filter(region == "Antofagasta") %>% 
+            filter(region == input$region) %>% 
+            select(comuna) %>% 
+            arrange(comuna) %>% 
+            pull()
+        
+        updateSelectInput(session, "comuna",
+                          choices = comunas_filtradas)
+    }) 
+    
+    #obtener provincia de la comuna ----
+    provincia <- reactive({
+        req(input$comuna != "")
+        d <- provincias_comunas %>% 
+            #filter(comuna == "Puente Alto") %>% 
+            filter(comuna == input$comuna) %>% 
+            mutate(provincia = as.character(provincia)) %>% 
+            select(provincia) %>% 
+            pull()
+        return(d)
+    })
+    
+    output$grafico_basico <- renderPlot({
+        req(input$comuna != "",
+            input$sector != "",
+            length(input$sector) >= 1,
+            movilidad,
+            provincia())
+            
+        #filtrar por región o provincia
+        if (input$selector_unidad_geo == "Región") {
+         data <- movilidad %>% 
+             filter(region == input$region) %>% 
+             rename(unidad = region)
+         
+        } else if (input$selector_unidad_geo == "Provincia") {
+            data <- movilidad %>% 
+                filter(provincia == provincia()) %>% 
+                rename(unidad = provincia)
+        }
+        
+        
+        #gráfico base
+        p <- data %>% 
+            #filtrar sectores
+            filter(sector %in% input$sector) %>% 
+            ggplot() +
+            geom_line(aes(fecha, valor, col = sector)) +
+            scale_x_date(date_breaks = "months", date_labels = "%b") +
+            labs(y = "Cambio porcentual respecto a línea de base") +
+            theme(axis.title.x = element_blank(),
+                  legend.title = element_blank(),
+                  panel.grid.minor.x = element_blank(),
+                  legend.position = "bottom")
+        
+        #poner subtítulo de región o provincia
+        if (input$selector_unidad_geo == "Región") {
+            p <- p +
+                labs(subtitle = paste("Región:", input$region))
+        } else if (input$selector_unidad_geo == "Provincia") {
+            p <- p +
+                labs(subtitle = paste("Provincia:", provincia()))
+            
+        }
+        return(p)
     })
 
 })
