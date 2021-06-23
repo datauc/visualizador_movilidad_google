@@ -1,8 +1,10 @@
 library(dplyr)
 library(ggplot2)
 
+Sys.setlocale(category = "LC_TIME", locale="es_ES.UTF-8") #Meses en español
+
 #importar y ordenar
-reporte <- readr::read_csv("datos/Region_Mobility_Report_CSVs/2020_CL_Region_Mobility_Report.csv") %>% 
+movilidad <- readr::read_csv("datos/Region_Mobility_Report_CSVs/2020_CL_Region_Mobility_Report.csv") %>% 
   rename(region = sub_region_1,
          provincia = sub_region_2,
          provincia_cod = iso_3166_2_code,
@@ -26,14 +28,26 @@ reporte <- readr::read_csv("datos/Region_Mobility_Report_CSVs/2020_CL_Region_Mob
   mutate(provincia = stringr::str_remove(provincia, " Province")) %>% 
   mutate_if(is.character, as.factor)
 
-reporte %>% count(region)
-reporte %>% count(sector) %>% select(1)
+movilidad %>% count(region)
+movilidad %>% count(sector) %>% select(1)
+
+
+save(movilidad, file = "movilidad.rdata")
 
 #graficar
-reporte %>% 
+movilidad %>% 
   filter(region == "Santiago Metropolitan Region") %>% 
   ggplot() +
   geom_line(aes(fecha, valor, col = sector)) +
-  facet_wrap(~provincia)
+  facet_wrap(~provincia, scales = "free") +
+  scale_x_date(date_breaks = "months", date_labels = "%b") +
+  labs(y = "Cambio porcentual respecto a línea de base") +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = c(.8, .15))
+
+ggsave(dpi = "retina", width = 10, height = 8,
+       filename = "Movilidad RM.jpg")
 
 #selector de comunas que entregue la provincia
