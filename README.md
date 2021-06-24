@@ -5,7 +5,11 @@ _En construcción_
 
 Disponible en: [http://dataintelligence.cl/shiny/visualizador_movilidad_google](http://dataintelligence.cl/shiny/visualizador_movilidad_google)
 
-Bastián Olea Herrera
+**Sebastián Massa Slimming**
+Analista de datos, DataUC, 
+Facultad de matemáticas, Universidad Católica.
+
+**Bastián Olea Herrera**
 Analista de datos, DataUC, 
 Facultad de matemáticas, Universidad Católica
 [http://bastian.olea.biz](http://bastian.olea.biz)
