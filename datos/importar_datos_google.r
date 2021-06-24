@@ -5,7 +5,8 @@ download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.c
 
 #cargar archivo
 movilidad <- readr::read_csv(paste0("datos/Reporte movilidad global/", 
-                       "movilidad_google_", lubridate::today(), ".csv"))
+                       "movilidad_google_", lubridate::today(), ".csv"),
+                       col_types = cols())
 
 library(dplyr)
 
