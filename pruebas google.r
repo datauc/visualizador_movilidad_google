@@ -275,6 +275,7 @@ group_by(sector) %>%
     )
 
 #—---
+#graficar con cuarentenas ----
 #filtrar provincia
 d1 <- movilidad %>% 
   filter(provincia == "Cordillera")
@@ -304,6 +305,7 @@ d2 %>%
       xmin = fecha, xmax = hasta,
       ymin = -Inf, ymax = Inf),
       alpha = 0.2) +
+  geom_hline(yintercept = 0, size = 0.3, alpha=0.8) +
   #lineas
   geom_line(aes(fecha, valor, col = sector), show.legend = F) +
   geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0) +
@@ -324,3 +326,9 @@ d2 %>%
   
 
 
+
+
+#—----
+
+movilidad %>% 
+  filter(region == "Metropolitana de Santiago") %>% count(provincia)

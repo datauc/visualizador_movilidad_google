@@ -9,20 +9,23 @@ shinyUI(fluidPage(
 
     #selectores ----
     fluidRow(
-        column(12,
+        column(6,
                selectInput("region",
                            label = "Seleccione su región",
-                           choices = regiones
-               ),
-               
+                           choices = regiones,
+                           width = "100%"
+               )
+        ),
+        column(6,     
                selectInput("comuna",
                            label = "Seleccione su comuna",
-                           choices = NULL
+                           choices = NULL,
+                           width = "100%"
                )
         )
     ),
     
-    #obtonera ----
+    #botonera ----
     fluidRow(
         column(12,
                shinyWidgets::radioGroupButtons("selector_unidad_geo",
@@ -30,7 +33,7 @@ shinyUI(fluidPage(
                                                choices = c("Región", "Provincia"),
                                                selected = "Región",
                                                justified = TRUE,
-                                               width = "90%")
+                                               width = "100%")
         ),
         
         column(12,
@@ -38,16 +41,67 @@ shinyUI(fluidPage(
                            label = "Seleccione un sector",
                            multiple = TRUE,
                            choices = sectores,
-                           width = "90%"
+                           selected = c("Viviendas", 
+                                        "Lugares de trabajo",
+                                        "Retail y recreación"),
+                           width = "100%"
+               )
+        ),
+        
+        column(8,
+               shinyWidgets::sliderTextInput(
+                   inputId = "suavizar",
+                   label = "Suavizar datos con la media móvil", 
+                   grid = F,
+                   force_edges = TRUE,
+                   width= "100%",
+                   choices = c("No", "2 días", "3 días", "4 días", "5 días", "6 días", "1 semana", "2 semanas")
+               )
+        ),
+        column(4,
+               shinyWidgets::switchInput(
+                   inputId = "fondo",
+                   label = "Cuarentenas", 
+                   value = TRUE,
+                   #labelWidth = "120px", 
+                   onLabel = "sí",
+                   offLabel = "no",
+                   size = "small",
+                   #onStatus = "danger",
+                   #offStatus = "info"
                )
         ),
     ),
+    fluidRow(
+        column(6,
+               selectInput(
+                   inputId = "mes_inicio",
+                   label = "Mes incial", 
+                   selected = lubridate::month(Sys.Date()) - 3,
+                   width = "100%",
+                   choice = meses[1:(lubridate::month(Sys.Date())-1)]
+               )
+        ),
+        column(6,
+               selectInput(
+                   inputId = "mes_fin",
+                   label = "Mes final", 
+                   selected = lubridate::month(Sys.Date()),
+                   width = "100%",
+                   choices = meses[2:lubridate::month(Sys.Date())]
+               )
+        )
+    ),
     
     #gráfico ----
+    # fluidRow(
+    #     column(12,
+    #      plotOutput("grafico_basico")      
+    #     )
+    # ),
     fluidRow(
         column(12,
-         plotOutput("grafico_basico")      
+               plotOutput("grafico_cuarentenas")      
         )
-        
     )
 ))
