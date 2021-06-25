@@ -258,7 +258,69 @@ movilidad2 %>%
 movilidad2 %>%   
 group_by(sector) %>% 
   e_charts(x = fecha) %>% 
-  e_line(valor) %>% 
-  #e_mark_line(data = list(xAxis = fecha_cambios), title = "Need for Speed") 
-  #e_mark_line(data = movilidad2$fecha_cambios,)
-  e_mark_line(data = list(xAxis = movilidad2$fecha_cambios), title = "Need for Speed") 
+  e_line(valor, symbol='none') %>% 
+  e_datazoom(
+    type = "slider", 
+    toolbox = FALSE,
+    bottom = -5,
+  ) %>% 
+  e_x_axis(fecha, axisPointer = list(show = TRUE)) %>% 
+  e_mark_line(data = list(xAxis = c(lubridate::ymd("2021-02-09")),
+                          symbol = "circle"
+                          ),
+              title = "cuarentena"
+              ) %>% 
+  e_mark_line(data = list(
+    yAxis = "average")
+    )
+
+#—---
+#filtrar provincia
+d1 <- movilidad %>% 
+  filter(provincia == "Cordillera")
+
+d1 %>% arrange(fecha)
+
+fecha_maxima <- max(d1$fecha)
+fecha_minima <- min(d1$fecha)
+
+#solo cambios
+cuarentenas_cambios <- cuarentenas %>% 
+  filter(comuna == "Puente Alto") %>% 
+  select(etapa, etapa_n, fecha) %>% 
+  filter(etapa != lag(etapa)) %>% 
+  mutate(hasta = lead(fecha),
+         hasta = replace(hasta, is.na(hasta), fecha_maxima))
+
+#suavizar
+d2 <- d1 %>% 
+  group_by(sector) %>% 
+  mutate(valor = zoo::rollmean(valor, k = 3, fill = "extend"))
+
+d2 %>% 
+  ggplot() +
+  #fondo
+  geom_rect(data = cuarentenas_cambios, aes(fill=etapa,
+      xmin = fecha, xmax = hasta,
+      ymin = -Inf, ymax = Inf),
+      alpha = 0.2) +
+  #lineas
+  geom_line(aes(fecha, valor, col = sector), show.legend = F) +
+  geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0) +
+  #limites horizontales
+  coord_cartesian(xlim = c(fecha_minima, fecha_maxima)) + 
+  scale_x_date(date_breaks = "months", date_labels = "%b", 
+               expand = expansion(mult = c(0,0))) +
+  scale_fill_manual(values = rev(c("yellow1", "orange", "red"))) +
+  labs(y = "Cambio porcentual respecto a línea de base") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        #legend.position = c(.8, .15))
+        legend.position = "right") +
+  guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.5), ncol = 1)) +
+  guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), ncol = 1))
+  
+
+
