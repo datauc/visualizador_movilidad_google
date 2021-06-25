@@ -61,7 +61,7 @@ ggsave(dpi = "retina", width = 10, height = 8,
 
 
 
-#selector de comunas que entregue la provincia ----
+#importar comunas y provincias de Chile ----
 library(rvest)
 
 #comunas de la RM
@@ -78,7 +78,7 @@ library(rvest)
 #          provincia2 = textclean::replace_non_ascii(provincia2))
 # comunas
 
-
+#comunas de chile
 comunas_s <- read_html("https://es.wikipedia.org/wiki/Anexo:Comunas_de_Chile") %>% 
   html_table()
 
@@ -86,17 +86,23 @@ comunas <- comunas_s %>%
   bind_rows() %>% 
   janitor::clean_names() %>% 
   select(-x3) %>% 
+  rename(codigo_comuna = cut_codigo_unico_territorial) %>% 
     mutate(provincia2 = tolower(provincia),
            provincia2 = stringr::str_remove(provincia2, "\\d+ "),
            provincia2 = textclean::replace_non_ascii(provincia2))
 
+comunas
+
 #anexar comunas a base de movilidad
-provincias_comunas <- movilidad %>% select(provincia) %>% distinct() %>% na.omit() %>% 
+provincias_comunas <- movilidad %>% 
+  select(provincia) %>% 
+  distinct() %>% 
+  na.omit() %>% 
   mutate(provincia2 = tolower(provincia),
          provincia2 = textclean::replace_non_ascii(provincia2)) %>% 
-  left_join(comunas %>% rename(comuna=nombre) %>% select(region, comuna, provincia, provincia2), 
+  left_join(comunas %>% rename(comuna=nombre) %>% select(region, comuna, codigo_comuna, provincia, provincia2), 
             by = c("provincia2" = "provincia2")) %>% 
-  select(provincia.x, region, comuna) %>% 
+  select(provincia.x, region, comuna, codigo_comuna) %>% 
   rename(provincia = provincia.x)
 
 provincias_comunas
@@ -104,6 +110,7 @@ provincias_comunas
 save(provincias_comunas, file = "datos/provincias_comunas.rdata")
 
 
+#generar vectores ----
 
 
 movilidad$sector %>% unique() %>% dput()
@@ -144,15 +151,114 @@ unique(movilidad$region)
 regiones
 
 
-
-
-#—----
+#echarts ----
 library(echarts4r)
 
 library(dplyr)
 unique(movilidad$provincia)
 movilidad %>% 
-  count(provincia)
-  filter(provincia == "Cordillera")
+  filter(provincia == "Cordillera") %>% 
+  group_by(sector) %>% 
   e_charts(x = fecha) %>% 
   e_line(valor)
+
+
+
+avg <- list(
+  type = "average",
+  name = "AVG"
+)
+
+movilidad %>% 
+  dplyr::group_by(sector) %>% 
+  dplyr::filter(provincia == "Santiago") %>% 
+  echarts4r::e_chart(x = fecha) %>% 
+  echarts4r::e_line(serie = valor, smooth = TRUE, symbol_size = 1,
+                    coord_system = "cartesian2d") %>% 
+  echarts4r::e_tooltip(trigger = "axis", axisPointer = list(type = "cross"),
+                       textStyle = list(fontFamily="sans-serif",
+                                        fontSize=10)) %>% 
+  echarts4r::e_toolbox_feature(feature = "saveAsImage", title = "Guardar gráfico") %>% 
+  echarts4r::e_toolbox_feature("dataZoom", title = list(zoom = "Ampliar gráfico", 
+                                                        back = "Deshacer")) %>% 
+  echarts4r::e_toolbox_feature("restore", title = 'Restaurar') %>% 
+  # echarts4r::e_title("Índice de movilidad Google", 
+  #                    left = "center", top = 2, 
+  #                    textStyle = list(fontSize = 20)) %>% 
+  echarts4r::e_theme("royal") %>% 
+  echarts4r::e_mark_line(data = list(type = "average", name = "AVG"), title = "Promedio")  %>% 
+  echarts4r::e_datazoom()  %>% 
+  #echarts4r::e_timeline_opts(autoPlay = TRUE, top = 40) %>% 
+  echarts4r::e_grid(right = "15%") %>%  
+  echarts4r::e_legend(orient = "vertical", right = "5", top = "15%") #%>% 
+  # echarts4r::e_mark_point(data = list(
+  #   xAxis = as.Date("2020-05-27"),
+  #   yAxis = 7,
+  #   value = "Cuarentena 1"
+  # )) 
+
+
+#remover puntos
+#acercar linea de tiempo
+#agregar cuarentenas
+#remover puntos
+
+
+
+#cuarentenas ----
+#importar cuarentenas desde el repositorio del ministerio de ciencias
+cuarentenas <- readr::read_csv("https://github.com/MinCiencia/Datos-COVID19/raw/master/output/producto74/paso_a_paso.csv",
+                               col_types = readr::cols()) %>% 
+  tidyr::pivot_longer(starts_with("20"), names_to = "fecha", values_to = "etapa_n") %>% 
+  mutate(etapa = case_when(etapa_n == 1 ~ "Cuarentena",
+                           etapa_n == 2 ~ "Transición",
+                           etapa_n == 3 ~ "Preparación",
+                           etapa_n == 4 ~ "Apertura inicial",
+                           etapa_n == 5 ~ "Apurtura avanzada")) %>% 
+  mutate(etapa = forcats::fct_reorder(etapa, etapa_n)) %>% 
+  mutate(fecha = lubridate::ymd(fecha)) %>% 
+  #anexar provincias y comunas a partir del codigo de comuna
+  left_join(provincias_comunas %>% select(provincia, comuna, codigo_comuna), by = "codigo_comuna")
+
+
+comuna = "La Florida"
+
+#solo cambios
+cuarentenas_cambios <- cuarentenas %>% 
+  filter(comuna == "La Florida") %>% 
+  select(etapa, etapa_n, fecha) %>% 
+  filter(etapa != lag(etapa)) %>% 
+  mutate(fecha_cambios = fecha)
+
+#Transición        2 2020-08-31
+
+movilidad %>% 
+  filter(fecha =="2020-08-31") %>% 
+  filter(provincia == "Cordillera")
+  #anexar cuarentenas
+  #left_join(cuarentenas %>% filter(comuna == "La Florida") %>% select(etapa, etapa_n, fecha), by = "fecha") %>% 
+  filter(provincia == "Cordillera") %>% 
+  left_join(cuarentenas_cambios, by = "fecha") %>% 
+  arrange(desc(fecha)) %>% 
+  glimpse()
+  
+
+#graficar cuarentenas
+movilidad2 <- movilidad %>% 
+  filter(provincia == "Cordillera") %>%
+  left_join(cuarentenas_cambios, by = "fecha")
+
+unique(movilidad2$fecha_cambios)
+
+max(movilidad$fecha)
+max(movilidad2$fecha)
+movilidad2 %>% 
+  filter(fecha == "2021-03-13")
+
+movilidad2 %>%   
+group_by(sector) %>% 
+  e_charts(x = fecha) %>% 
+  e_line(valor) %>% 
+  #e_mark_line(data = list(xAxis = fecha_cambios), title = "Need for Speed") 
+  #e_mark_line(data = movilidad2$fecha_cambios,)
+  e_mark_line(data = list(xAxis = movilidad2$fecha_cambios), title = "Need for Speed") 

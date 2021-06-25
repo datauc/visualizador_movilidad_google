@@ -16,17 +16,17 @@ download.file("https://www.gstatic.com/covid19/mobility/Region_Mobility_Report_C
 #descomprimir sólo chile
 cat("DESCOMPRESIÓN...", fill=T)
 unzip(zipfile = paste0("datos/movilidad_regional/reporte_regional.zip"),
-      files = "2020_CL_Region_Mobility_Report.csv",
+      files = "2021_CL_Region_Mobility_Report.csv",
       exdir = paste0("datos/movilidad_regional/", lubridate::today()))
 
 
 #cargar archivo
 cat("CARGA...", fill=T)
 movilidad <- readr::read_csv(paste0("datos/movilidad_regional/", lubridate::today(), 
-                       "/2020_CL_Region_Mobility_Report.csv"),
-                       col_types = readr::cols())
+                       "/2021_CL_Region_Mobility_Report.csv"))
+                       #col_types = readr::cols())
 
-
+#max(movilidad$date)
 # #filtrar solo chile
 # movilidad <- movilidad %>% 
 #   filter(country_region == "Chile")
@@ -38,7 +38,7 @@ movilidad <- readr::read_csv(paste0("datos/movilidad_regional/", lubridate::toda
 # movilidad <- readr::read_csv(file = paste0("Reporte movilidad global/", 
 #                                           "movilidad_google_", lubridate::today(), ".csv"))
 
-#limpiar
+#limpiar ----
 cat("LIMPIEZA...", fill=T)
 
 movilidad <- movilidad %>% 
