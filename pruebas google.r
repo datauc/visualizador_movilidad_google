@@ -142,3 +142,17 @@ unique(movilidad$region)
        
 
 regiones
+
+
+
+
+#—----
+library(echarts4r)
+
+library(dplyr)
+unique(movilidad$provincia)
+movilidad %>% 
+  count(provincia)
+  filter(provincia == "Cordillera")
+  e_charts(x = fecha) %>% 
+  e_line(valor)

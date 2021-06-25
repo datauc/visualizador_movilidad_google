@@ -1,24 +1,46 @@
-#descargar archivo completo
-download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", 
-              destfile = paste0("datos/Reporte movilidad global/", 
-                                "movilidad_google_", lubridate::today(), ".csv"))
-
-#cargar archivo
-movilidad <- readr::read_csv(paste0("datos/Reporte movilidad global/", 
-                       "movilidad_google_", lubridate::today(), ".csv"),
-                       col_types = cols())
+#setwd("~/Movilidad/Google/visualizador_movilidad_google/")
+setwd("~/Movilidad/Google/visualizador_movilidad_google")
 
 library(dplyr)
 
-#filtrar solo chile
-movilidad <- movilidad %>% 
-  filter(country_region_code == "CL")
+# #descargar archivo completo
+# download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", 
+#               destfile = paste0("Reporte movilidad global/", 
+#                                 "movilidad_google_", lubridate::today(), ".csv"))
 
-#reescribir archivo completo
-readr::write_csv(movilidad, file = paste0("datos/Reporte movilidad global/", 
-                                          "movilidad_google_", lubridate::today(), ".csv"))
+#descargar carpeta de reportes nacionales
+cat("DESCARGA...", fill=T)
+download.file("https://www.gstatic.com/covid19/mobility/Region_Mobility_Report_CSVs.zip",
+              destfile = paste0("datos/movilidad_regional/reporte_regional.zip"))
+
+#descomprimir sólo chile
+cat("DESCOMPRESIÓN...", fill=T)
+unzip(zipfile = paste0("datos/movilidad_regional/reporte_regional.zip"),
+      files = "2020_CL_Region_Mobility_Report.csv",
+      exdir = paste0("datos/movilidad_regional/", lubridate::today()))
+
+
+#cargar archivo
+cat("CARGA...", fill=T)
+movilidad <- readr::read_csv(paste0("datos/movilidad_regional/", lubridate::today(), 
+                       "/2020_CL_Region_Mobility_Report.csv"),
+                       col_types = readr::cols())
+
+
+# #filtrar solo chile
+# movilidad <- movilidad %>% 
+#   filter(country_region == "Chile")
+
+# #reescribir archivo completo
+# readr::write_csv(movilidad, file = paste0("Reporte movilidad global/", 
+#                                           "movilidad_google_", lubridate::today(), ".csv"))
+
+# movilidad <- readr::read_csv(file = paste0("Reporte movilidad global/", 
+#                                           "movilidad_google_", lubridate::today(), ".csv"))
 
 #limpiar
+cat("LIMPIEZA...", fill=T)
+
 movilidad <- movilidad %>% 
   rename(region = sub_region_1,
          provincia = sub_region_2,
@@ -49,4 +71,4 @@ movilidad <- movilidad %>%
                          "Bio Bio" = "Biobío"))
 
 #guardar
-save(movilidad, file = "movilidad.rdata")
+save(movilidad, file = "~/Movilidad/Google/visualizador_movilidad_google/movilidad.rdata")
