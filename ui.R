@@ -48,7 +48,7 @@ shinyUI(fluidPage(
                )
         ),
         
-        column(8,
+        column(6,
                shinyWidgets::sliderTextInput(
                    inputId = "suavizar",
                    label = "Suavizar datos con la media móvil", 
@@ -58,11 +58,24 @@ shinyUI(fluidPage(
                    choices = c("No", "2 días", "3 días", "4 días", "5 días", "6 días", "1 semana", "2 semanas")
                )
         ),
-        column(4,
+        column(3,
                shinyWidgets::switchInput(
                    inputId = "fondo",
                    label = "Cuarentenas", 
                    value = TRUE,
+                   #labelWidth = "120px", 
+                   onLabel = "sí",
+                   offLabel = "no",
+                   size = "small",
+                   #onStatus = "danger",
+                   #offStatus = "info"
+               )
+        ),
+        column(3,
+               shinyWidgets::switchInput(
+                   inputId = "covid",
+                   label = "Casos Covid-19", 
+                   value = FALSE,
                    #labelWidth = "120px", 
                    onLabel = "sí",
                    offLabel = "no",

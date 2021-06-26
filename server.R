@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyServer(function(input, output, session) {
-
+    
     #filtrar comunas ----
     observeEvent(input$region, {
         req(input$region != "")
@@ -28,6 +28,7 @@ shinyServer(function(input, output, session) {
             pull()
         return(d)
     })
+    
     
     
     # #grafico ----
@@ -91,6 +92,23 @@ shinyServer(function(input, output, session) {
         #anexar provincias y comunas a partir del codigo de comuna
         left_join(provincias_comunas %>% select(provincia, comuna, codigo_comuna), by = "codigo_comuna")
     
+    #casos covid ----
+    covid_activos_f <- reactive({
+        req(input$covid == TRUE)
+        
+        #filtrar y dar formato
+        d <- covid_activos %>% 
+            select(-comuna) %>% 
+            #asegurarse que calce la comuna
+            mutate(codigo_comuna = as.numeric(codigo_comuna)) %>% 
+            left_join(cuarentenas %>% 
+                          select(comuna, codigo_comuna), 
+                      by = "codigo_comuna") %>% 
+            filter(comuna == input$comuna) %>% 
+            select(-region, -codigo_region, -poblacion)
+        
+        return(d)
+    })
     
     
     #grafico nuevo ----
@@ -159,8 +177,6 @@ shinyServer(function(input, output, session) {
                                              fill = "extend"))
         }
         
-        
-        
         #graficar
         p <- d3 %>% 
             ggplot()
@@ -168,13 +184,14 @@ shinyServer(function(input, output, session) {
         #fondo de cuarentenas
         if (input$fondo == TRUE) {
             p <- p +
-            #fondo
-            geom_rect(data = cuarentenas_cambios, aes(fill = etapa,
-                                                      xmin = fecha, xmax = hasta,
-                                                      ymin = -Inf, ymax = Inf),
-                      alpha = 0.2)
+                #fondo
+                geom_rect(data = cuarentenas_cambios, aes(fill = etapa,
+                                                          xmin = fecha, xmax = hasta,
+                                                          ymin = -Inf, ymax = Inf),
+                          alpha = 0.2)
         }
         
+        #gráfico base
         p <- p +
             geom_hline(yintercept = 0, size = 0.4, alpha=0.7) +
             geom_hline(yintercept = 50, size = 0.3, alpha=0.4, linetype = "dashed") +
@@ -185,9 +202,30 @@ shinyServer(function(input, output, session) {
             #limites horizontales
             coord_cartesian(xlim = c(fecha_minima_f, fecha_maxima_f)) + 
             scale_x_date(date_breaks = "months", date_labels = "%b", 
-                         expand = expansion(mult = c(0,0))) +
-            scale_y_continuous(labels = function (x) paste0(x, "%"), 
-                               breaks = c(-75, -50, -25, 0, 25, 50, 75)) +
+                         expand = expansion(mult = c(0,0)))
+        
+        #eje y doble o normal
+        if (input$covid == TRUE) {
+            p <- p +
+                #linea de covid
+                geom_line(data = covid_activos_f(), aes(fecha, casos/50), 
+                          size = 1, alpha=0.8, linetype = "dashed", lineend="round") +
+                scale_y_continuous(labels = function (x) paste0(x, "%"), 
+                                   breaks = c(-75, -50, -25, 0, 25, 50, 75),
+                                   #eje y secundario
+                                   sec.axis = sec_axis(~.*50, #breaks = 0, 
+                                                       breaks = scales::breaks_extended(6), #breaks covid
+                                                       labels = function (x) ifelse(x<0, "", x), #eliminar negativos
+                                                       name = paste("Casos activos de Covid-19 en", 
+                                                                    as.character(input$comuna))
+                                   ))
+        } else {
+            p <- p +
+                scale_y_continuous(labels = function (x) paste0(x, "%"), 
+                                   breaks = c(-75, -50, -25, 0, 25, 50, 75))
+        }
+        
+        p <- p +
             scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red"))) +
             labs(y = "Cambio porcentual respecto a línea de base") +
             theme_minimal() +
@@ -210,5 +248,8 @@ shinyServer(function(input, output, session) {
         }
         return(p)
     }, res = 90)
-
+    
+    #descargar datos covid ----
+    covid_activos <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
+    
 })

@@ -332,3 +332,58 @@ d2 %>%
 
 movilidad %>% 
   filter(region == "Metropolitana de Santiago") %>% count(provincia)
+
+
+
+#—----
+
+covid_activos <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
+
+covid_activos_f <- covid_activos %>% 
+  select(-comuna) %>% 
+  mutate(codigo_comuna = as.numeric(codigo_comuna)) %>% 
+  left_join(cuarentenas %>% 
+              select(comuna, codigo_comuna), 
+            by = "codigo_comuna") %>% 
+  filter(comuna == "Puente Alto") %>% 
+  select(-region, -codigo_region, -poblacion) %>% 
+  #reescalar datos
+  mutate(casos_r = scales::rescale(casos, to = c(-50, 50)))
+
+
+d2 %>% 
+  ggplot() +
+  #fondo
+  geom_rect(data = cuarentenas_cambios, aes(fill=etapa,
+                                            xmin = fecha, xmax = hasta,
+                                            ymin = -Inf, ymax = Inf),
+            alpha = 0.2) +
+  geom_hline(yintercept = 0, size = 0.3, alpha=0.8) +
+  #lineas
+  geom_line(aes(fecha, valor, col = sector), show.legend = F) +
+  ####
+  #covid
+  geom_line(data = covid_activos_f, aes(fecha, casos/50), 
+            size = 1, alpha=0.8, linetype = "dashed", lineend="round") +
+  scale_y_continuous(sec.axis = sec_axis(~.*50, 
+                                         breaks = scales::breaks_extended(6), #breaks covid
+                                         labels = function (x) ifelse(x<0, "", x), #eliminar negativos
+                                         #breaks = 0, 
+                                         name = paste("Casos activos de Covid-19 en", "Puente Alto"))) +
+  ####
+  ####
+  geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0) +
+  #limites horizontales
+  coord_cartesian(xlim = c(fecha_minima, fecha_maxima)) + 
+  scale_x_date(date_breaks = "months", date_labels = "%b", 
+               expand = expansion(mult = c(0,0))) +
+  scale_fill_manual(values = rev(c("yellow1", "orange", "red"))) +
+  labs(y = "Cambio porcentual respecto a línea de base") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        #legend.position = c(.8, .15))
+        legend.position = "right") +
+  guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.5), ncol = 1)) +
+  guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), ncol = 1))
