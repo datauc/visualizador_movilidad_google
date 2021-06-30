@@ -137,7 +137,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
            column(12, align="right",
              actionLink(
                inputId = "ayuda",
-               style = "align: right !important; font-size: 120%; color: #5f7181;",
+               style = "align: right !important; font-size: 130%; color: #5f7181;",
                #class = "botonayuda",
                label = NULL, icon = icon("question-circle")
              )
@@ -167,8 +167,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                     # br(),
                     
                     div(
-                      HTML("Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google."),
-                      p("Utilice los botones presentados a continuación para seleccionar las variables que le interesa graficar."),
+                      HTML("Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google. Utilice los botones presentados a continuación para seleccionar las variables que le interesa graficar."),
                       
                       HTML("<p>Los datos son obtenidos y procesados desde 
                     el sitio <em>Google Mobility Report</em>. 
@@ -176,7 +175,6 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                     <a href='https://www.google.com/covid19/mobility/' 
                        style='color: #999999'>
                     sitio web del Google Mobility Report</a></p>"),
-               hr(),
                     ) %>% 
                  aos::aos(animation = "zoom-in", duration = "600")
              )
@@ -211,16 +209,27 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
            #   aos::aos(animation = "zoom-in", duration = "600"),
            
            
-           #fluidRow(
-           # shinycustomloader::withLoader(
-           #   infoBoxOutput("box_cuarentena"), 
-           #   type = "html", loader = "loader1"),
-           # shinycustomloader::withLoader(
-           #   infoBoxOutput("casos_activos"), 
-           #   type = "html", loader = "loader1"),
-           # shinycustomloader::withLoader(
-           #   infoBoxOutput("poblacion"), 
-           #   type = "html", loader = "loader1")),
+           #datos 1 ----
+           
+           fluidRow(
+             hr(),
+             column(3,
+                    uiOutput("dato_mayor_aumento")
+             ),
+             column(3,
+                    uiOutput("dato_mayor_reduccion")
+             ),
+             column(3,
+                    uiOutput("dato_menor_movilidad")
+             ),
+             column(3,
+                    uiOutput("dato_mayor_movilidad")
+             ),
+             column(12,
+                    br(),
+             hr(),
+             )
+           ),
            
            #grafico ----
            fluidRow(
@@ -254,24 +263,11 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
            
            
            
-           #datitos ----
-           fluidRow(
-             hr(),
-             column(3,
-                    uiOutput("dato_mayor_aumento")
-             ),
-             column(3,
-                    uiOutput("dato_mayor_reduccion")
-             ),
-             column(3,
-                    uiOutput("dato_menor_movilidad")
-             ),
-             column(3,
-                    uiOutput("dato_mayor_movilidad")
-             )
-           ),
+           #datitos 2 ----
+           
            #fila 2
            fluidRow(
+             hr(),
              column(3,
                     uiOutput("dato_covid_activos")
              ),
@@ -284,7 +280,11 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
              column(3,
                     uiOutput("dato_fase_cuarentena")
              ),
-             hr(),
+             
+             column(12,
+                    br(),
+                    hr(),
+             )
            ),
            # fluidRow(
            #   column(3,
@@ -301,7 +301,6 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
            
            fluidRow(
              column(12,
-                    hr(),
                     h3("Provincias con mayor movilidad por sector"),
                     formattable::formattableOutput("tabla_mayor_movilidad")
              ),
@@ -325,19 +324,19 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
     fluidRow(
       column(12, align = "center",
              hr(),
-             em("Plataforma desarrollada por DATA UC"), 
+             em("Plataforma desarrollada por Data UC usando R y Shiny"), 
              br(),
              a(href = "https://www.mat.uc.cl", target = "blank", 
                style = "color: #5f7181",
                "Facultad de Matemáticas - Pontificia Universidad Católica de Chile"),
+             HTML("<p>Desarrollo: 
+                    <a href='https://www.mat.uc.cl' 
+                       style='color: #5f7181'>
+                     Sebastián Massa Slimming y Bastián Olea Herrera</a></p>"),
              HTML("<p>Diseño y metodología: 
                     <a href='https://www.mat.uc.cl' 
                        style='color: #5f7181'>
                     Alejandro Jara Vallejos, Alexis Alvear Leyton y Mauricio Castro Cepero</a></p>"),
-             HTML("<p>Desarrollo interfaz gráfica: 
-                    <a href='https://www.mat.uc.cl' 
-                       style='color: #5f7181'>
-                     Sebastián Massa Slimming y Bastián Olea Herrera</a></p>"),
              
              tags$a(img(
                src = "logodatauc.png" ,
