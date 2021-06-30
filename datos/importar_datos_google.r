@@ -26,6 +26,8 @@ movilidad <- readr::read_csv(paste0("datos/movilidad_regional/", lubridate::toda
                        "/2021_CL_Region_Mobility_Report.csv"))
                        #col_types = readr::cols())
 
+movilidad_2020 <- readr::read_csv(paste0("datos/movilidad_regional/", "2020",
+                                         "/2020_CL_Region_Mobility_Report.csv"))
 #max(movilidad$date)
 # #filtrar solo chile
 # movilidad <- movilidad %>% 
@@ -42,6 +44,8 @@ movilidad <- readr::read_csv(paste0("datos/movilidad_regional/", lubridate::toda
 cat("LIMPIEZA...", fill=T)
 
 movilidad <- movilidad %>% 
+  #anexar datos de 2020
+  bind_rows(movilidad_2020) %>% 
   rename(region = sub_region_1,
          provincia = sub_region_2,
          provincia_cod = iso_3166_2_code,

@@ -2,6 +2,7 @@
 
 library(shiny)
 library(shinybulma)
+library(lubridate)
 
 shinyUI(fluidPage(
   
@@ -147,24 +148,42 @@ shinyUI(fluidPage(
            ),
            #br(),
            
-           fluidRow(
-             column(6,
-                    selectInput(
-                      inputId = "mes_inicio",
-                      label = h4("Mes inicial"), 
-                      selected = lubridate::month(Sys.Date()) - 3,
-                      width = "100%",
-                      choice = meses[1:(lubridate::month(Sys.Date())-1)]),
-             ),
-             column(6,
-                    selectInput(
-                      inputId = "mes_fin",
-                      label = h4("Mes final"), 
-                      selected = lubridate::month(Sys.Date()),
-                      width = "100%",
-                      choices = meses[2:lubridate::month(Sys.Date())]),
-             )
-           ),
+           # fluidRow(
+           #   column(6,
+           #          selectInput(
+           #            inputId = "mes_inicio",
+           #            label = h4("Mes inicial"),
+           #            selected = lubridate::month(Sys.Date()) - 3,
+           #            width = "100%",
+           #            choice = meses[1:(lubridate::month(Sys.Date())-1)]),
+           #   ),
+           #   column(6,
+           #          selectInput(
+           #            inputId = "mes_fin",
+           #            label = h4("Mes final"),
+           #            selected = lubridate::month(Sys.Date()),
+           #            width = "100%",
+           #            choices = meses[2:lubridate::month(Sys.Date())]),
+           #   )
+           # ),
+           
+           #column(12,
+                  dateRangeInput(
+                    inputId = "fecha",
+                    label = "Seleccionar rango de fechas",
+                    min = "2020-02-15", #ymd
+                    max = Sys.Date(),
+                    start = Sys.Date() - months(3),
+                    end = Sys.Date(),
+                    format = "dd-mm-yyyy",
+                    startview = "month",
+                    weekstart = 0,
+                    language = "es",
+                    separator = " hasta ",
+                    width = "100%",
+                    autoclose = TRUE
+                  ),
+           #),
            
            column(12, align="right",
              actionLink(

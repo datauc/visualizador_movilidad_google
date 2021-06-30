@@ -97,8 +97,8 @@ shinyServer(function(input, output, session) {
     fecha_maxima <- max(d2$fecha)
     
     #filtros de fecha
-    fecha_minima_f <- lubridate::ymd(paste("2021", input$mes_inicio, "01"))
-    fecha_maxima_f <- lubridate::ymd(paste("2021", input$mes_fin, "31"))
+    fecha_minima_f <- input$fecha[1] #lubridate::ymd(paste("2021", input$mes_inicio, "01"))
+    fecha_maxima_f <- input$fecha[2] #lubridate::ymd(paste("2021", input$mes_fin, "31"))
     
     #solo cambios
     cuarentenas_cambios <- cuarentenas() %>% 

@@ -532,3 +532,7 @@ movilidad %>%
   group_by(region) %>% 
   summarize(valor = mean(valor, na.rm = T)) %>% 
   arrange(valor)
+
+
+#—----
+min(movilidad$fecha)

@@ -138,3 +138,35 @@ body {
   /*background: #293c55; 
   border-color: #293c55;*/
 }
+
+
+
+/*Estilo selector de fechas*/
+.datepicker {font-size: 10px; 
+background: white; 
+font-size: 10pt; 
+color: #414a58;} /* fondo del calendario */
+
+               /*fecha seleccionada */
+               .datepicker table tr td.active:active, 
+               .datepicker table tr td.active.highlighted:active, 
+               .datepicker table tr td.active.active, 
+               .datepicker table tr td.active.highlighted.active {
+                  background-color: #5f7181; color: white;
+               }
+
+               
+               /*hover sobre fecha seleccionada */
+               .datepicker table tr td.active:hover:active, 
+               .datepicker table tr td.active.disabled:active, 
+               .datepicker table tr td.active.disabled:hover:active, 
+               .datepicker table tr td.active:hover.active, 
+               .datepicker table tr td.active.disabled.active, 
+               .datepicker table tr td.active.disabled:hover.active  {
+                  background-color: #414a58; color: white;
+               } 
+               
+               /*hover sobre otras fechas */
+               .datepicker table tr td.day:hover {
+                  background-color: #414a58; color: white;
+               }
