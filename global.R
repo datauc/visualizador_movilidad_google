@@ -71,7 +71,7 @@ bloque_datos <- function(titulo = "Título",
     div(style = "margin-bottom: -12px;",
         #cifra
         p(cambio, class = "cifra_datos", style = "display:inline-block;"),
-        p("%", style = paste0("color;", gris_oscuro, "; font-size: 200%; font-family: Oswald; display:inline-block;")),
+        p("%", style = paste0("color:", gris_oscuro, "; font-size: 200%; font-family: Oswald; display:inline-block;")),
         #flecha
         p(flecha_simbolo, style = paste0("color: ", flecha_color, "; display:inline-block; vertical-align: 60%; line-height: normal;")),
     ),

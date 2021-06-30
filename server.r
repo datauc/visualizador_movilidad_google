@@ -323,6 +323,7 @@ shinyServer(function(input, output, session) {
   
   #tabla ----
   
+  #provincias mayor movilidad
   output$tabla_mayor_movilidad <- formattable::renderFormattable({
     movilidad %>% 
       ungroup() %>% 
