@@ -67,38 +67,47 @@ shinyServer(function(input, output, session) {
   })
   
   
-  #grafico nuevo ----
-  output$grafico_cuarentenas <- renderPlot({
+  #procesamiento ----
+  
+  #filtrar por región o provincia
+  datos1 <- reactive({
     req(input$comuna != "",
         input$sector != "",
         length(input$sector) >= 1,
         movilidad,
         provincia())
-    
-    #filtrar por región o provincia
+
     if (input$selector_unidad_geo == "Región") {
       d1 <- movilidad %>% 
         filter(region == input$region) %>% 
         rename(unidad = region) %>% 
         filter(is.na(provincia))
-      
     } else if (input$selector_unidad_geo == "Provincia") {
       d1 <- movilidad %>% 
         filter(provincia == provincia()) %>% 
         rename(unidad = provincia)
     }
+    return(d1)
+  })
     
     #filtrar sectores
-    d2 <- d1 %>% 
+    datos2 <- reactive({
+      req(datos1())
+    #filtrar sectores
+    d2 <- datos1() %>% 
       filter(sector %in% input$sector)
+    return(d2)
+    })
     
+    cuarentenas_cambios <- reactive({
+      req(datos2())
     #minimos y maximos de fecha
-    fecha_minima <- min(d2$fecha)
-    fecha_maxima <- max(d2$fecha)
+    fecha_minima <- min(datos2()$fecha)
+    fecha_maxima <- max(datos2()$fecha)
     
     #filtros de fecha
-    fecha_minima_f <- input$fecha[1] #lubridate::ymd(paste("2021", input$mes_inicio, "01"))
-    fecha_maxima_f <- input$fecha[2] #lubridate::ymd(paste("2021", input$mes_fin, "31"))
+    #fecha_minima_f <- input$fecha[1] #lubridate::ymd(paste("2021", input$mes_inicio, "01"))
+    #fecha_maxima_f <- input$fecha[2] #lubridate::ymd(paste("2021", input$mes_fin, "31"))
     
     #solo cambios
     cuarentenas_cambios <- cuarentenas() %>% 
@@ -107,11 +116,14 @@ shinyServer(function(input, output, session) {
       filter(etapa != lag(etapa)) %>% 
       mutate(hasta = lead(fecha),
              hasta = replace(hasta, is.na(hasta), fecha_maxima))
-    
+    return(cuarentenas_cambios)
+    })
     
     #suavizar
+    datos3 <- reactive({
+      req(datos2())
     if (input$suavizar == "No") {
-      d3 <- d2
+      d3 <- datos2()
     } else if (input$suavizar != "No") {
       if (input$suavizar == "1 semana") {
         dias <- 7
@@ -121,21 +133,24 @@ shinyServer(function(input, output, session) {
         dias <- readr::parse_number(input$suavizar)
       }
       #suavizar
-      d3 <- d2 %>%
+      d3 <- datos2() %>%
         group_by(sector) %>%
         mutate(valor = zoo::rollmean(valor, k = dias, 
                                      fill = "extend"))
     }
+      return(d3)
+    })
     
-    #graficar
-    p <- d3 %>% 
+    #graficar ----
+    output$grafico_cuarentenas <- renderPlot({
+    p <- datos3() %>% 
       ggplot()
     
     #fondo de cuarentenas
     if (input$fondo == TRUE) {
       p <- p +
         #fondo
-        geom_rect(data = cuarentenas_cambios, aes(fill = etapa,
+        geom_rect(data = cuarentenas_cambios(), aes(fill = etapa,
                                                   xmin = fecha, xmax = hasta,
                                                   ymin = -Inf, ymax = Inf),
                   alpha = 0.2)
@@ -150,7 +165,7 @@ shinyServer(function(input, output, session) {
       geom_line(aes(fecha, valor, col = sector), show.legend = F) +
       geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0) +
       #limites horizontales
-      coord_cartesian(xlim = c(fecha_minima_f, fecha_maxima_f)) + 
+      coord_cartesian(xlim = c(input$fecha[1], input$fecha[2])) + 
       scale_x_date(date_breaks = "months", date_labels = "%b", 
                    expand = expansion(mult = c(0,0)))
     
@@ -183,9 +198,9 @@ shinyServer(function(input, output, session) {
             legend.title = element_blank(),
             panel.grid.minor.x = element_blank(),
             #legend.position = c(.8, .15))
-            legend.position = "right") +
-      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.5), ncol = 1)) +
-      guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), ncol = 1))
+            legend.position = "bottom") +
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.5), nrow = 2)) +
+      guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), nrow = 3))
     
     #poner subtítulo de región o provincia
     if (input$selector_unidad_geo == "Región") {
@@ -197,8 +212,6 @@ shinyServer(function(input, output, session) {
       
     }
     return(p)
-    
-    
   }, res = 90)
   
   #box ----

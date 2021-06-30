@@ -168,21 +168,7 @@ shinyUI(fluidPage(
            # ),
            
            #column(12,
-                  dateRangeInput(
-                    inputId = "fecha",
-                    label = "Seleccionar rango de fechas",
-                    min = "2020-02-15", #ymd
-                    max = Sys.Date(),
-                    start = Sys.Date() - months(3),
-                    end = Sys.Date(),
-                    format = "dd-mm-yyyy",
-                    startview = "month",
-                    weekstart = 0,
-                    language = "es",
-                    separator = " hasta ",
-                    width = "100%",
-                    autoclose = TRUE
-                  ),
+                  
            #),
            
            column(12, align="right",
@@ -277,6 +263,21 @@ shinyUI(fluidPage(
                     plotOutput("grafico_cuarentenas") %>% 
                       shinycustomloader::withLoader(type = "html", loader = "loader3"),
                     br(),
+                    dateRangeInput(
+                      inputId = "fecha",
+                      label = "Seleccionar rango de fechas",
+                      min = "2020-02-15", #ymd
+                      max = Sys.Date(),
+                      start = Sys.Date() - months(3),
+                      end = Sys.Date(),
+                      format = "dd-mm-yyyy",
+                      startview = "month",
+                      weekstart = 0,
+                      language = "es",
+                      separator = " hasta ",
+                      width = "100%",
+                      autoclose = TRUE
+                    ),
                     
                     # shinycustomloader::withLoader(
                     #   dataTableOutput("Tabla"),
