@@ -2,6 +2,8 @@ library(shiny)
 library(shinybulma)
 library(formattable)
 
+options(shiny.sanitize.errors = FALSE)
+
 shinyServer(function(input, output, session) {
   
   #filtrar comunas ----
@@ -137,7 +139,7 @@ shinyServer(function(input, output, session) {
         geom_rect(data = cuarentenas_cambios(), aes(fill = etapa,
                                                   xmin = fecha, xmax = hasta,
                                                   ymin = -Inf, ymax = Inf),
-                  alpha = 0.2)
+                  alpha = 0.1)
     }
     
     #gráfico base
@@ -146,7 +148,7 @@ shinyServer(function(input, output, session) {
       geom_hline(yintercept = 50, size = 0.3, alpha = 0.4, linetype = "dashed") +
       geom_hline(yintercept = -50, size = 0.3, alpha = 0.4, linetype = "dashed") +
       #lineas
-      geom_line(aes(fecha, valor, col = sector), show.legend = F) +
+      geom_line(aes(fecha, valor, col = sector), size = 1, show.legend = F) +
       geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0) +
       #limites horizontales
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2])) + 
@@ -176,6 +178,8 @@ shinyServer(function(input, output, session) {
     
     p <- p +
       scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red"))) +
+      scale_color_manual(values = c("#dc0073", "#008bf8", "#ff4e00",
+                                    "#6a4c93", "#04e762", "#f5b700")) +
       labs(y = "Cambio porcentual respecto a línea de base") +
       theme_minimal() +
       theme(axis.title.x = element_blank(),
@@ -183,7 +187,12 @@ shinyServer(function(input, output, session) {
             panel.grid.minor.x = element_blank(),
             #legend.position = c(.8, .15))
             legend.position = "bottom") +
-      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.5), nrow = 2)) +
+      theme(text = element_text(family = "Open Sans", color = gris_oscuro),
+            plot.subtitle = element_text(family = "Oswald", size = 14),
+            plot.title = element_text(family = "Oswald"),
+            axis.title.y = element_text(family = "Open Sans", size = 10),
+            axis.text.y = element_text(family = "Oswald")) +
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.2), nrow = 2)) +
       guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), nrow = 3))
     
     #poner subtítulo de región o provincia
@@ -364,13 +373,14 @@ shinyServer(function(input, output, session) {
   
   #fase cuarentena
   output$dato_fase_cuarentena <- renderUI({
-    print(cuarentenas())
+    req(input$comuna != "")
+    
     dato <- cuarentenas() %>%
       #select(-c(codigo_region, codigo_comuna, comuna_residencia)) %>%
       filter(fecha == max(fecha),
              comuna == input$comuna)
     
-    print(dato)
+
     bloque_datos(titulo = "Plan Paso a Paso",
                  cambio = dato$etapa_n,
                  hoy = 0,
@@ -394,6 +404,7 @@ shinyServer(function(input, output, session) {
   
   #filtrar casos covid por comuna seleccionada
   covid_activos_f <- reactive({
+    req(input$comuna != "")
     #req(input$covid == TRUE)
     
     #filtrar y dar formato
@@ -517,26 +528,25 @@ shinyServer(function(input, output, session) {
     shinyWidgets::sendSweetAlert(
       session = session,
       title = NULL,
-      btn_colors = "#1574D6",
+      btn_colors = gris_oscuro,
       btn_labels = "Volver",
       closeOnClickOutside = TRUE,
       showCloseButton = TRUE,
-      # text = tags$span(
-      #   tags$h3("Selector de años"),
-      #   tags$br(),
-      #   tags$h5("El selector de años le permite elegir el periodo temporal en que se grafique la pregunta seleccionada. El rango de años posible depende del marco temporal en que se aplicó la pregunta seleccionada en las encuestas. Por defecto, se grafican los datos a partir de la encuesta más reciente donde se haya aplicado la pregunta seleccionada, con una antiguedad de seis años.", ),
-      #   tags$br(),
-      #   tags$br(),
-      #   tags$br(),
-      #   tags$h5("Por ejemplo, si elige una pregunta que empezó a aplicarse el año 2000 y dejó de preguntarse el año 2015, se le ofrecerá automáticamente el rango mínimo de 2000 y máximo de 2015, y la selección por defecto irá desde 2015 hacia 8 años atrás (2007). El selector le permite modificar esta selección para extenderla y percibir la totalidad de los datos, o bien, acercarse para apreciar el detalle de la evolución temporal de los datos."),
-      #   tags$br(),
-      # ),
       text = list(
-        h1("De donde se extraen los datos?"),
-        p("aslsdjlksa"),
+        h2("De donde se extraen los datos?"),
+        p("Los datos del visualizador son extraídos directamente de los archivos CSV que están en el sitio web de Google COVID-19 Community Mobility Report. Estos muestran las tendencias de cómo va variando los números de visitas a determinados lugares y el tiempo que dura en comparación a un valor referencial. En este caso, los datos fueron filtrados exclusivamente para Chile."),
         hr(),
-        h2("asjahshja"),
-        p("323232")
+        h2("¿Qué lugares considera el informe?"),
+        p("Básicamente, los lugares o categorías que toma en consideración son: supermercados y farmacias (movilidad en lugares como supermercado, almacenes, tiendas de comida, etc), parques (parques locales, nacionales, playas, plazas, jardínes públicos, etc) estaciones de transporte (por ejemplo, movilidad en metro, tren o bus) tiendas y ocio (movilidad en cafeterías, centros comerciales, restaurantes, cines, bibliotecas, parque de diversiones, etc), zonas residenciales y lugares de trabajo (tendencias de movilidad en los lugares de trabajo)."),
+        hr(),
+        h2("¿Cómo interpretar el indicador?"),
+        ("El informe permite identificar en qué medida, las personas de Chile han aumentado o reducido sus visitas o movilidad en las categorías (lugares) que se mencionan anteriormente. Al momento del despliegue, si el porcentaje de variación es negativo, indica que la movilidad ha disminuido. Por su parte, si el porcentaje es positivo, implica que la movilidad de las personas ha aumentado. Para mayor información sobre cómo interpretar patrones comunes de los datos, visite el sitio web: https://support.google.com/covid19-mobility/answer/9825414?hl=es-419"),
+        hr(),
+        h2("¿Cómo se obtienen los datos?"),
+        p("El conjunto de datos es obtenido a partir de los propios usuarios que tienen habilitado el historial de ubicaciones de su cuenta registrada en Google con GPS y el uso de sus teléfonos inteligentes (smartphones). Por ende, no es posible garantizar que se represente el comportamiento exacto de toda la población. Por otra parte, en cuanto a los valores de referencia, Google calcula el valor medio de cada día de la semana durante un periodo de 5 semanas, abarcando desde el 3 de enero al 6 de febrero del 2020."),
+        hr(),
+        h2("¿Pueden haber datos incompletos en alguna provincia?"),
+        p("De acuerdo a la documentación de Google, si los datos no alcanzan los umbrales de calidad y privacidad, es posible que pueda visualizar los campos de algunos lugares o fechas vacíos. Por añadidura, basado en el principio de privacidad diferencial, no se comparte información personal (movimientos, contactos o ubicación) que pueda identificar particularmente a una persona.")
       ),
       html = T
     )

@@ -4,7 +4,7 @@ library(shiny)
 library(shinybulma)
 library(lubridate)
 
-shinyUI(fluidPage(
+shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
   
   #ocultar errores
   #tags$head(tags$style(".shiny-output-error{visibility: hidden}")),
@@ -15,9 +15,12 @@ shinyUI(fluidPage(
   
   fluidRow(
     column(12,
-           h1("Visualizador Google Mobility Report") %>% 
-             aos::aos(animation = "zoom-in", duration = "2000"),
+           h1("Visualizador de movilidad de Google") %>% 
+             aos::aos(animation = "zoom-in", duration = "1000"),
            br(),
+           p("Desarrollado por Data UC, Universidad Católica de Chile",
+             style = "color: #5f7181 !important; font-family: Oswald; font-style: italic;") %>% 
+             aos::aos(animation = "zoom-in", duration = "1000", delay = "100"),
            
            #br()
     )
@@ -92,6 +95,7 @@ shinyUI(fluidPage(
            #br(),
            
            fluidRow(
+             br(),
              column(6,
                     
                     shinyWidgets::prettySwitch(
@@ -163,15 +167,15 @@ shinyUI(fluidPage(
                     # br(),
                     
                     div(
-                      p("Esta herramienta permite llevar a cabo el procesamiento de los datos de COVID-19 Community Mobility Report ."),
+                      HTML("Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google."),
                       p("Utilice los botones presentados a continuación para seleccionar las variables que le interesa graficar."),
                       
                       HTML("<p>Los datos son obtenidos y procesados desde 
-                    el sitio Google Mobility Report. 
-               Para mayor información haga click aquí
+                    el sitio <em>Google Mobility Report</em>. 
+               Para mayor información y datos sobre metodología, acceda al
                     <a href='https://www.google.com/covid19/mobility/' 
                        style='color: #999999'>
-                    sitio web de Google Mobility Report</a></p>"),
+                    sitio web del Google Mobility Report</a></p>"),
                hr(),
                     ) %>% 
                  aos::aos(animation = "zoom-in", duration = "600")
@@ -222,7 +226,8 @@ shinyUI(fluidPage(
            fluidRow(
              column(12,
                     plotOutput("grafico_cuarentenas") %>% 
-                      shinycustomloader::withLoader(type = "html", loader = "loader3"),
+                      shinycssloaders::withSpinner(),
+                      #shinycustomloader::withLoader(type = "html", loader = "loader3"),
                     br(),
                     dateRangeInput(
                       inputId = "fecha",
@@ -296,6 +301,7 @@ shinyUI(fluidPage(
            
            fluidRow(
              column(12,
+                    hr(),
                     h3("Provincias con mayor movilidad por sector"),
                     formattable::formattableOutput("tabla_mayor_movilidad")
              ),

@@ -13,6 +13,12 @@ load("movilidad.rdata")
 gris_claro <- "#5f7181"
 gris_oscuro <- "#414a58"
 
+# scales::show_col(
+# c("#dc0073", "#008bf8", "#ff4e00", #"#90e39a", 
+#   "#6a4c93", "#04e762", "#f5b700"
+#   ))
+
+
 #provincias_comunas$region %>% unique()  %>% sort() %>% dput()
 regiones <- c("Metropolitana de Santiago", "Antofagasta", "Arica y Parinacota", "Atacama", "Aysén del Gral. C. Ibáñez del Campo", 
               "Biobío", "Coquimbo", "La Araucanía", "Lib. Gral. Bernardo O'Higgins", 
@@ -39,7 +45,12 @@ meses <- c("Enero" = 1,
            "Diciembre" = 12)
 
 
+#Configuración de animación al cargar gráficos
+options(spinner.color = gris_claro,
+        spinner.type= 4,
+        spinner.size = 1)
 
+#función que calcula diferencia de movilidad entre hoy y ayer
 movilidad_cambios <- function(data) {
   data %>% 
     ungroup() %>% 
