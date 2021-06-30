@@ -1,14 +1,140 @@
+@import url('//fonts.googleapis.com/css?family=Open Sans: 400, 600');
+@import url('//fonts.googleapis.com/css?family=Oswald: 300, 400, 800');
+
+
+
+.hero{
+  background-color:#293c55!important;
+}
+
+/*color gris del texto */
+h1, h2, g3, h4, h5
+{ color: #414a58; }
+
+h1{
+  font-family: Oswald; 
+  font-size: 26pt; 
+  font-weight:300;
+}
+
+h2{
+  font-family: Oswald; 
+  font-size: 17pt; 
+  font-weight:600; !important
+}
+
+h3{
+  font-family: Oswald; 
+  font-size: 15pt; 
+  font-weight:600;
+}
+
+h4{
+  font-family: Oswald; 
+  font-size: 12pt; 
+  font-weight:500;
+}
+
+    /*links*/
+ a {
+   font-family: Open Sans; 
+   font-weight:400, 
+   color: #5f7181 !important;
+ }
+
+body {
+  font-family: Open Sans; 
+  font-weight:400
+  
+}
+  
 .cifra_datos {
   /*font-family: 'Dosis', cursive;*/
-  font-weight: 600;
-  color: #000000;
+  font-family: Oswald; 
+  font-size: 22pt; 
+  font-weight:300;
+  /*font-weight: 600;*/
+  color: #414a58;
     font-size: 300%;
     margin-bottom: -7px;
 }
 
 
 .texto_datos {
-  color: #666666; 
+  color: #5f7181; 
   margin-bottom: 0px; 
   font-size: 80%;
+}
+
+
+/* color normal botoneras */
+.btn.radiobtn.btn-default, 
+.selectize-input.items
+{ background: #5f7181; 
+  border-color: #5f7181; }
+/*
+0176de
+/* color de realce botoneras */
+.btn.radiobtn.btn-default.active, 
+.btn.radiobtn.btn-default:hover, 
+.selectize-input.items:hover,
+.selectize-dropdown .active 
+{ background: #414a58; 
+  border-color: #414a58; }
+/*293c55  
+
+  /* color de texto botoneras */ 
+  .btn.radiobtn.btn-default, 
+  .btn.radiobtn.btn-default.active, 
+  .btn.radiobtn.btn-default:hover, 
+  { color: white !important; }
+
+
+
+
+
+.selectize-input {
+  font-size: 10pt; 
+  color: white;
+}
+.selectize-input.input-active {
+  font-size: 10pt; 
+  color: white !important;
+}
+
+.selectize-control.single .selectize-input:after {
+   border-color: white transparent transparent transparent; !important}
+
+.selectize-dropdown {
+  font-size: 10pt; 
+  color: black; 
+  background-color: white !important; 
+}
+
+/*elementos del desplegable hover*/
+.selectize-dropdown .active {
+  color: white; 
+}
+
+
+
+/* estilos botonera radioGroupButton */
+.btn.radiobtn.btn-default {
+  font-size: 10pt; 
+  color: white; /*texto*/
+  /*background: #0176de; 
+  border-color: #0176de;*/
+}
+.btn.radiobtn.btn-default.active { /*botón activado/apretado*/
+  font-size: 10pt; 
+  color: white; 
+  box-shadow: none;  /*sin sombra*/
+  /*background: #293c55; 
+  border-color: #293c55;*/
+}
+.btn.radiobtn.btn-default:hover { /*botón hover*/
+  font-size: 10pt; 
+  color: white;
+  /*background: #293c55; 
+  border-color: #293c55;*/
 }

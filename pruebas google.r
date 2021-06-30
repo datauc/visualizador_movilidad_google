@@ -476,9 +476,33 @@ movilidad %>%
 movilidad %>% 
   ungroup() %>% 
   filter(!is.na(provincia)) %>%  #filtrar regiones
-  filter(sector == "Mercadería y farmacia") %>% 
+  filter(sector == "Parques") %>% 
   filter(fecha == max(fecha)) %>%  #ultima fecha
   arrange(desc(valor))
+
+#tablas ----
+library(formattable)
+#provincias con mayor movilidad por sector
+movilidad %>% 
+  ungroup() %>% 
+  filter(!is.na(provincia)) %>%  #filtrar regiones
+  #filter(sector == "Mercadería y farmacia") %>% 
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  group_by(sector) %>% 
+  arrange(desc(valor)) %>% 
+  mutate(id = 1:n()) %>% 
+  filter(id == 1) %>% 
+  select(Provincia = provincia, Región = region, 
+         Sector = sector, Movilidad=valor) %>% 
+  formattable(
+    align = c("l", "l", "c", "c"),
+    list(
+      Provincia = formatter("span", style = ~ style(font.style = "bold")),
+      area(col = "Movilidad") ~ color_tile("#fce8ef", "#f3a5c0")#,
+      #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
+    )
+  )
+
 
 #movilidad promedio sectores
 movilidad %>% 
@@ -486,8 +510,18 @@ movilidad %>%
   filter(!is.na(provincia)) %>%  #filtrar regiones
   filter(fecha == max(fecha)) %>% #ultima fecha
   group_by(sector) %>% 
-  summarize(valor = mean(valor, na.rm = T)) %>% 
-  arrange(valor)
+  summarize(valor = round(mean(valor, na.rm = T), 1)) %>% 
+  arrange(valor) %>% 
+  select(Sector = sector,
+         Movilidad = valor) %>% 
+  formattable(
+    align = c("l", "l", "c", "c"),
+    list(
+      Sector = formatter("span", style = ~ style(font.style = "bold")),
+      area(col = "Movilidad") ~ color_tile("#fce8ef", "#f3a5c0")#,
+      #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
+    )
+  )
 
 #movilidad promedio por región
 movilidad %>% 
