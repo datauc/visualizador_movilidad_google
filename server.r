@@ -446,20 +446,24 @@ shinyServer(function(input, output, session) {
       btn_labels = "Volver",
       closeOnClickOutside = TRUE,
       showCloseButton = TRUE,
-      text = tags$span(
-        tags$h3("Selector de años"),
-        tags$br(),
-        tags$h5("El selector de años le permite elegir el periodo temporal en que se grafique la pregunta seleccionada. El rango de años posible depende del marco temporal en que se aplicó la pregunta seleccionada en las encuestas. Por defecto, se grafican los datos a partir de la encuesta más reciente donde se haya aplicado la pregunta seleccionada, con una antiguedad de seis años.", ),
-        tags$br(),
-        img(src = "años.gif", width = "300", align = "center"),
-        #div(id="video_anios", img(width = 300,
-        #                          src = "Años_2.mp4")),
-        tags$br(),
-        tags$br(),
-        tags$h5("Por ejemplo, si elige una pregunta que empezó a aplicarse el año 2000 y dejó de preguntarse el año 2015, se le ofrecerá automáticamente el rango mínimo de 2000 y máximo de 2015, y la selección por defecto irá desde 2015 hacia 8 años atrás (2007). El selector le permite modificar esta selección para extenderla y percibir la totalidad de los datos, o bien, acercarse para apreciar el detalle de la evolución temporal de los datos."),
-        tags$br(),
+      # text = tags$span(
+      #   tags$h3("Selector de años"),
+      #   tags$br(),
+      #   tags$h5("El selector de años le permite elegir el periodo temporal en que se grafique la pregunta seleccionada. El rango de años posible depende del marco temporal en que se aplicó la pregunta seleccionada en las encuestas. Por defecto, se grafican los datos a partir de la encuesta más reciente donde se haya aplicado la pregunta seleccionada, con una antiguedad de seis años.", ),
+      #   tags$br(),
+      #   tags$br(),
+      #   tags$br(),
+      #   tags$h5("Por ejemplo, si elige una pregunta que empezó a aplicarse el año 2000 y dejó de preguntarse el año 2015, se le ofrecerá automáticamente el rango mínimo de 2000 y máximo de 2015, y la selección por defecto irá desde 2015 hacia 8 años atrás (2007). El selector le permite modificar esta selección para extenderla y percibir la totalidad de los datos, o bien, acercarse para apreciar el detalle de la evolución temporal de los datos."),
+      #   tags$br(),
+      # ),
+      text = list(
+        h1("De donde se extraen los datos?"),
+        p("aslsdjlksa"),
+        hr(),
+        h2("asjahshja"),
+        p("323232")
       ),
-      html = TRUE
+      html = T
     )
   })
   

@@ -60,15 +60,16 @@ shinyUI(fluidPage(
            h1("Visualizador Google Mobility Report") %>% 
              aos::aos(animation = "zoom-in", duration = "2000"),
            br(),
-           h2("Menú de selección", icon("table")) %>% 
-             aos::aos(animation = "zoom-in", duration = "600"),
-           br()
+           
+           #br()
     )
   ),
   
   #sidebar ----
   fluidRow(
     column(4,
+           h2("Menú de selección", icon("table")) %>% 
+             aos::aos(animation = "zoom-in", duration = "600"),
            #bulmaColumns(
            # bulmaColumn(multiline = TRUE, 
            #            sidebarPanel(
@@ -197,9 +198,9 @@ shinyUI(fluidPage(
                     
                     #fluidRow(
                     #bulmaColumn(
-                    h1("Instrucciones") %>% 
-                      aos::aos(animation = "zoom-in", duration = "600"),
-                    br(),
+                    # h1("Instrucciones") %>% 
+                    #   aos::aos(animation = "zoom-in", duration = "600"),
+                    # br(),
                     
                     div(
                       p("Esta herramienta permite llevar a cabo el procesamiento de los datos de COVID-19 Community Mobility Report ."),
@@ -302,17 +303,18 @@ shinyUI(fluidPage(
              ),
              column(3,
                     uiOutput("dato_mayor_movilidad")
-             )
-           ),
-           fluidRow(
-             column(3,
-                    uiOutput("dato_mayor_aumento_sector")
-             ),
-             column(3,
-                    uiOutput("dato_mayor_reduccion_sector")
              ),
              hr(),
            ),
+           # fluidRow(
+           #   column(3,
+           #          uiOutput("dato_mayor_aumento_sector")
+           #   ),
+           #   column(3,
+           #          uiOutput("dato_mayor_reduccion_sector")
+           #   ),
+           #   hr(),
+           # ),
            
            
            #tablas ----
