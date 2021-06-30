@@ -535,4 +535,16 @@ movilidad %>%
 
 
 #—----
-min(movilidad$fecha)
+
+#Casos actuales
+readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
+
+movilidad %>% 
+filter(lubridate::year(fecha) == 2020)
+
+#Peak de casos
+#Anti peak de casos
+#Etapa de la comuna
+#Botón de descarga
+#Texto que interprete el resultado 
+

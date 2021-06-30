@@ -16,7 +16,9 @@ shinyServer(function(input, output, session) {
       pull()
     
     updateSelectInput(session, "comuna",
-                      choices = comunas_filtradas)
+                      choices = comunas_filtradas,
+                      selected = ifelse(input$region == "Metropolitana de Santiago", "Santiago", comunas_filtradas[1])
+    )
   }) 
   
   #obtener provincia de la comuna ----
@@ -45,25 +47,7 @@ shinyServer(function(input, output, session) {
       mutate(etapa = forcats::fct_reorder(etapa, etapa_n)) %>% 
       mutate(fecha = lubridate::ymd(fecha)) %>% 
       #anexar provincias y comunas a partir del codigo de comuna
-      left_join(provincias_comunas %>% select(provincia, comuna, codigo_comuna), by = "codigo_comuna")
-  })
-  
-  #casos covid ----
-  covid_activos_f <- reactive({
-    req(input$covid == TRUE)
-    
-    #filtrar y dar formato
-    d <- covid_activos() %>% 
-      select(-comuna) %>% 
-      #asegurarse que calce la comuna
-      mutate(codigo_comuna = as.numeric(codigo_comuna)) %>% 
-      left_join(cuarentenas() %>% 
-                  select(comuna, codigo_comuna), 
-                by = "codigo_comuna") %>% 
-      filter(comuna == input$comuna) %>% 
-      select(-region, -codigo_region, -poblacion)
-    
-    return(d)
+      left_join(provincias_comunas %>% select(provincia, region, comuna, codigo_comuna), by = "codigo_comuna")
   })
   
   
@@ -321,17 +305,108 @@ shinyServer(function(input, output, session) {
                  region = dato$region)
   })
   
-  #mayor movilidad en el sector
+  #casos covid activos
+  output$dato_covid_activos <- renderUI({
+    dato <- covid_activos_f() %>% 
+      arrange(fecha) %>% 
+      mutate(ayer = lag(casos)) %>% 
+      filter(fecha == max(fecha)) %>% 
+      slice(1)
+    
+    bloque_datos(titulo = "Casos Covid-19 activos",
+                 cambio = dato$casos,
+                 hoy = dato$casos,
+                 ayer = dato$ayer,
+                 provincia = paste("Casos activos al", format(dato$fecha, "%d de %B")),
+                 sector = dato$comuna,
+                 region = dato$region,
+                 texto = "casos")
+  })
   
+  output$dato_covid_peak <- renderUI({
+    casos_hoy <- covid_activos_f() %>% 
+      filter(fecha == max(fecha)) %>% 
+      slice(1)
+    
+    dato <- covid_activos_f() %>% 
+      arrange(desc(casos)) %>% 
+      slice(1)
+    
+    bloque_datos(titulo = "Peak de casos activos",
+                 cambio = dato$casos,
+                 hoy = dato$casos,
+                 ayer = casos_hoy$casos,
+                 provincia = paste("Peak de casos:", format(dato$fecha, "%d de %B, %Y")),
+                 sector = dato$comuna,
+                 region = dato$region,
+                 texto = "casos")
+  })
+  
+  output$dato_covid_anti_peak <- renderUI({
+    casos_hoy <- covid_activos_f() %>% 
+      filter(fecha == max(fecha)) %>% 
+      slice(1)
+    
+    dato <- covid_activos_f() %>%
+      filter(lubridate::year(fecha) == lubridate::year(Sys.Date())) %>% 
+      arrange(casos) %>% 
+      slice(1)
+    
+    bloque_datos(titulo = "Día con menos casos activos este año",
+                 cambio = dato$casos,
+                 hoy = dato$casos,
+                 ayer = casos_hoy$casos,
+                 provincia = paste("Día con menores casos:", format(dato$fecha, "%d de %B, %Y")),
+                 sector = dato$comuna,
+                 region = dato$region,
+                 texto = "casos")
+  })
+  
+  #fase cuarentena
+  output$dato_fase_cuarentena <- renderUI({
+    print(cuarentenas())
+    dato <- cuarentenas() %>%
+      #select(-c(codigo_region, codigo_comuna, comuna_residencia)) %>%
+      filter(fecha == max(fecha),
+             comuna == input$comuna)
+    
+    print(dato)
+    bloque_datos(titulo = "Plan Paso a Paso",
+                 cambio = dato$etapa_n,
+                 hoy = 0,
+                 ayer = 0,
+                 provincia = paste("Fase:", dato$etapa),
+                 sector = dato$comuna,
+                 region = dato$region,
+                 texto = "",
+                 prefijo = "fase")
+  })
   
   
 
-  
-  #descargar datos covid ----
+  #casos covid ----
+  #descargar datos covid 
   covid_activos <- reactive({
+    #req(input$covid == TRUE)
+    readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna",
+                    col_types = readr::cols())
+  })
+  
+  #filtrar casos covid por comuna seleccionada
+  covid_activos_f <- reactive({
+    #req(input$covid == TRUE)
     
-    readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
-    
+    #filtrar y dar formato
+    d <- covid_activos() %>% 
+      select(-comuna) %>% 
+      #asegurarse que calce la comuna
+      mutate(codigo_comuna = as.numeric(codigo_comuna)) %>% 
+      left_join(cuarentenas() %>% 
+                  select(comuna, codigo_comuna), 
+                by = "codigo_comuna") %>% 
+      filter(comuna == input$comuna) %>% 
+      select(-codigo_region, -poblacion)
+    return(d)
   })
   
   #tabla ----

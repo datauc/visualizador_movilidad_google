@@ -59,19 +59,27 @@ bloque_datos <- function(titulo = "Título",
                          ayer = 30,
                          provincia = "Provincia",
                          sector = "Sector",
-                         region = "Región") {
+                         region = "Región",
+                         prefijo ="",
+                         texto = "%") {
   
   flecha_simbolo <- ifelse(hoy > ayer, "▲", "▼")
   flecha_color <- ifelse(hoy > ayer, 
                            "#ff8080", #rojo
                            "#99e699") #verde
   
+  #borrar simbolo si cifras son iguales
+  flecha_simbolo <- ifelse(hoy == ayer, "", flecha_simbolo)
+  
   list(
     p(titulo, style = paste0("margin-bottom: -7px; font-family: Oswald; font-size: 130%; color:", gris_oscuro, "; margin-top: 20px;")),
     div(style = "margin-bottom: -12px;",
+        #prefijo a cifra
+        p(prefijo, style = paste0("color:", gris_oscuro, "; font-size: 200%; font-family: Oswald; display:inline-block;")),
         #cifra
         p(cambio, class = "cifra_datos", style = "display:inline-block;"),
-        p("%", style = paste0("color:", gris_oscuro, "; font-size: 200%; font-family: Oswald; display:inline-block;")),
+        #texto despues de cifra (%)
+        p(texto, style = paste0("color:", gris_oscuro, "; font-size: 200%; font-family: Oswald; display:inline-block;")),
         #flecha
         p(flecha_simbolo, style = paste0("color: ", flecha_color, "; display:inline-block; vertical-align: 60%; line-height: normal;")),
     ),

@@ -6,54 +6,12 @@ library(lubridate)
 
 shinyUI(fluidPage(
   
-  
+  #ocultar errores
   #tags$head(tags$style(".shiny-output-error{visibility: hidden}")),
   #tags$head(tags$style(".shiny-output-error:after{content: 'Error'; visibility: hidden}")),
   theme = "flatly",
-  
   aos::use_aos(), 
   includeCSS("estilos.css"), #estilos css
-  
-  
-  # tags$head(
-  #   # tags$style(HTML("@import url('//fonts.googleapis.com/css?family=Open Sans:400,600');")),
-  #   # tags$style(HTML("@import url('//fonts.googleapis.com/css?family=Oswald:300, 400,800');")),
-  #   tags$style(".hero{background-color:#293c55!important;}"),
-  #   tags$h1(tags$style("h1{font-family: Oswald; font-size: 26pt; font-weight:300;}")),
-  #   tags$h2(tags$style("h2{font-family: Oswald; font-size: 17pt; font-weight:600; !important}")),
-  #   tags$h3(tags$style("h3{font-family: Oswald; font-size: 15pt; font-weight:600;}")),
-  #   tags$h4(tags$style("h4{font-family: Oswald; font-size: 12pt; font-weight:500;}")),
-  #   #links
-  #   tags$a(tags$style("a{font-family: Open Sans; font-weight:400, color: #df1a57; !important}")),
-  #   tags$head(tags$style("* {font-family: Open Sans; font-weight:400}")),
-  #   
-  # ),
-  
-  # tags$style(type = "text/css", "
-  #     .selectize-input {font-size: 10pt; color: white; !important}
-  #     .selectize-input.input-active {font-size: 10pt; color: black; !important}
-  #     .selectize-input.items {background-color: #0176de; border-color: #0176de; !important}
-  #     .selectize-input.items:hover {background-color: #293c55; border-color: #293c55; !important}
-  #     .selectize-control.single .selectize-input:after {border-color: white transparent transparent transparent; !important}
-  #     "), 
-  # tags$style(type = "text/css", "
-  #     .selectize-dropdown {font-size: 10pt; color: black; background-color: white; !important}
-  #     .selectize-dropdown .active {color: white; background: #0176de !important;}
-  #     "),
-  
-  #bulmaNav(
-  #  "Pruebas",
-  #  bulmaSection(
-  #    bulmaContainer(
-  # br(),
-  # tags$style(".topimg {
-  #                     margin-left:-30px;
-  #                     margin-right:-30px;
-  #                     margin-top:-15px;
-  #                   }"),
-  # div(class="topimg",img(src="https://midas.mat.uc.cl/bigdata/img/logofmuc.png",height= "40%", width="40%")),
-  #      br(),
-  
   
   fluidRow(
     column(12,
@@ -181,7 +139,9 @@ shinyUI(fluidPage(
              )
            )
            
-    ),
+    ) %>% 
+      #animación sidebar
+      aos::aos(animation = "zoom-in", duration = "1000", delay = "100"),
     
     #body ----
     column(8,
@@ -303,6 +263,21 @@ shinyUI(fluidPage(
              ),
              column(3,
                     uiOutput("dato_mayor_movilidad")
+             )
+           ),
+           #fila 2
+           fluidRow(
+             column(3,
+                    uiOutput("dato_covid_activos")
+             ),
+             column(3,
+                    uiOutput("dato_covid_peak")
+             ),
+             column(3,
+                    uiOutput("dato_covid_anti_peak")
+             ),
+             column(3,
+                    uiOutput("dato_fase_cuarentena")
              ),
              hr(),
            ),
@@ -334,7 +309,9 @@ shinyUI(fluidPage(
              ),
            )
            
-    ),
+    ) %>% 
+      #animación body
+      aos::aos(animation = "zoom-in", duration = "1000", delay = "200"),
     
     
     #footer ----
@@ -364,7 +341,9 @@ shinyUI(fluidPage(
              )
              
       )
-    )
+    ) %>% 
+      #animación footer
+      aos::aos(animation = "zoom-in", duration = "1000", delay = "300"),
   )
 )
 )
