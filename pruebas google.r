@@ -387,3 +387,114 @@ d2 %>%
         legend.position = "right") +
   guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.5), ncol = 1)) +
   guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), ncol = 1))
+
+
+
+
+#—----
+
+#datos ----
+load("movilidad.rdata")
+
+movilidad %>% 
+  filter(provincia == "Cordillera")
+
+movilidad_cambios <- movilidad %>% 
+  ungroup() %>% 
+  #filtrar regiones
+  filter(!is.na(provincia)) %>% 
+  #ordenar
+  arrange(provincia, sector, fecha) %>% 
+  #cambio respecto al día anterior
+  mutate(cambio = valor - lag(valor))
+
+movilidad_cambios <- function(data) {
+data %>% 
+  ungroup() %>% 
+  #filtrar regiones
+  filter(!is.na(provincia)) %>% 
+  #ordenar
+  arrange(provincia, sector, fecha) %>% 
+  #cambio respecto al día anterior
+  mutate(ayer = lag(valor),
+         cambio = valor - ayer)
+}
+
+
+movilidad_cambios %>% 
+  print(n=200)
+
+#mayor aumento
+movilidad %>% 
+  movilidad_cambios() %>% 
+  filter(cambio > 0) %>% 
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(desc(cambio)) %>% 
+  slice(1)
+
+#mayor disminución
+movilidad %>% 
+  movilidad_cambios() %>% 
+  filter(cambio < 0) %>% 
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(cambio) %>% 
+  slice(1)
+
+#nivel mas bajo de movilidad
+movilidad %>% 
+  ungroup() %>% 
+  filter(!is.na(provincia)) %>%  #filtrar regiones
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(valor)
+
+#nivel mas alto de movilidad
+movilidad %>% 
+  ungroup() %>% 
+  filter(!is.na(provincia)) %>%  #filtrar regiones
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(desc(valor))
+
+#mayor aumento en sector x, y, ...
+movilidad %>% 
+  movilidad_cambios() %>% 
+  filter(cambio > 0) %>% 
+  #filtrar sector
+  filter(sector == "Mercadería y farmacia") %>% 
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(desc(cambio))
+
+#mayor disminución en sector x, y, ...
+movilidad %>% 
+  movilidad_cambios() %>% 
+  filter(cambio < 0) %>% 
+  #filtrar sector
+  filter(sector == "Mercadería y farmacia") %>% 
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(cambio)
+
+#mayor movilidad en sector
+movilidad %>% 
+  ungroup() %>% 
+  filter(!is.na(provincia)) %>%  #filtrar regiones
+  filter(sector == "Mercadería y farmacia") %>% 
+  filter(fecha == max(fecha)) %>%  #ultima fecha
+  arrange(desc(valor))
+
+#movilidad promedio sectores
+movilidad %>% 
+  ungroup() %>% 
+  filter(!is.na(provincia)) %>%  #filtrar regiones
+  filter(fecha == max(fecha)) %>% #ultima fecha
+  group_by(sector) %>% 
+  summarize(valor = mean(valor, na.rm = T)) %>% 
+  arrange(valor)
+
+#movilidad promedio por región
+movilidad %>% 
+  ungroup() %>% 
+  filter(!is.na(region)) %>%  #filtrar regiones
+  filter(is.na(provincia)) %>%  #filtrar regiones
+  filter(fecha == max(fecha)) %>% #ultima fecha
+  group_by(region) %>% 
+  summarize(valor = mean(valor, na.rm = T)) %>% 
+  arrange(valor)

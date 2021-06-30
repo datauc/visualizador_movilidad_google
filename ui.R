@@ -4,7 +4,7 @@ library(shiny)
 
 shinyUI(fluidPage(
 
-    # Application title
+    includeCSS("estilos.css"), #estilos css
     titlePanel("Visualizador de movilidad"),
 
     #selectores ----
@@ -116,5 +116,16 @@ shinyUI(fluidPage(
         column(12,
                plotOutput("grafico_cuarentenas")      
         )
+    ),
+    
+    #datitos ----
+    fluidRow(
+        column(3,
+               uiOutput("dato_mayor_aumento")
+    ),
+    column(3,
+           uiOutput("dato_prueba")
     )
+    )
+    
 ))

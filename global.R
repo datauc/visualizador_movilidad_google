@@ -31,3 +31,47 @@ meses <- c("Enero" = 1,
            "Octubre" = 10,
            "Noviembre" = 11,
            "Diciembre" = 12)
+
+
+
+movilidad_cambios <- function(data) {
+  data %>% 
+    ungroup() %>% 
+    #filtrar regiones
+    filter(!is.na(provincia)) %>% 
+    #ordenar
+    arrange(provincia, sector, fecha) %>% 
+    #cambio respecto al día anterior
+    mutate(ayer = lag(valor),
+           cambio = valor - ayer)
+}
+
+
+bloque_datos <- function(titulo = "Título",
+                         cambio = 20,
+                         hoy = 50,
+                         ayer = 30,
+                         provincia = "Provincia",
+                         sector = "Sector",
+                         region = "Región") {
+  
+  flecha_simbolo <- ifelse(hoy > ayer, "▲", "▼")
+  flecha_color <- ifelse(hoy > ayer, 
+                           "#ff8080", #rojo
+                           "#99e699") #verde
+  
+  list(
+    h4(titulo, style = "margin-bottom: -7px;"),
+    div(style = "margin-bottom: -12px;",
+        #cifra
+        p(cambio, class = "cifra_datos", style = "display:inline-block;"),
+        p("%", style = "font-size: 200%; display:inline-block;"),
+        #flecha
+        p(flecha_simbolo, style = paste0("color: ", flecha_color, "; display:inline-block; vertical-align: 60%; line-height: normal;")),
+    ),
+    #textos grises
+    p(provincia, class = "texto_datos"),
+    p(sector, class = "texto_datos"),
+    p(region %>% paste("Región:", .), class = "texto_datos")
+  ) 
+}

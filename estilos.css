@@ -1,0 +1,14 @@
+.cifra_datos {
+  /*font-family: 'Dosis', cursive;*/
+  font-weight: 600;
+  color: #000000;
+    font-size: 300%;
+    margin-bottom: -7px;
+}
+
+
+.texto_datos {
+  color: #666666; 
+  margin-bottom: 0px; 
+  font-size: 80%;
+}

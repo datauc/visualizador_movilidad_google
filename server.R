@@ -96,8 +96,9 @@ shinyServer(function(input, output, session) {
     covid_activos_f <- reactive({
         req(input$covid == TRUE)
         
+        
         #filtrar y dar formato
-        d <- covid_activos %>% 
+        d <- covid_activos() %>% 
             select(-comuna) %>% 
             #asegurarse que calce la comuna
             mutate(codigo_comuna = as.numeric(codigo_comuna)) %>% 
@@ -249,7 +250,41 @@ shinyServer(function(input, output, session) {
         return(p)
     }, res = 90)
     
+    
+    
+    
+    #datitos ----
+
+    output$dato_mayor_aumento <- renderUI({
+        dato <- movilidad %>% 
+            movilidad_cambios() %>% 
+            filter(cambio > 0) %>% 
+            filter(fecha == max(fecha)) %>%  #ultima fecha
+            arrange(desc(cambio)) %>% 
+            slice(1)
+
+        bloque_datos(titulo = "Mayor aumento diario",
+                      cambio = dato$cambio,
+                      hoy = dato$valor,
+                      ayer = dato$ayer,
+                      provincia = dato$provincia,
+                      sector = dato$sector,
+                      region = dato$region)
+    })
+    
+    
+    output$dato_prueba <- renderUI({
+        bloque_datos(titulo = "Bloque de prueba")
+    })
+    
+    
     #descargar datos covid ----
-    covid_activos <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
+    #solo descargar si se activa, porque se demora como 5 segundos en descargar
+    covid_activos <- reactive({
+        req(input$covid == TRUE)
+        if (input$covid == TRUE) {
+            covid_activos <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
+        }
+    })
     
 })
