@@ -143,9 +143,9 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
              )
            )
            
-    ) %>% 
+    ), #%>% 
       #animación sidebar
-      aos::aos(animation = "zoom-in", duration = "1000", delay = "100"),
+      #aos::aos(animation = "zoom-in", duration = "1000", delay = "100"),
     
     #body ----
     column(8,
