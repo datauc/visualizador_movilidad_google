@@ -69,7 +69,8 @@ body {
 
 /* color normal botoneras */
 .btn.radiobtn.btn-default, 
-.selectize-input.items
+.selectize-input.items,
+.btn
 { background: #5f7181; 
   border-color: #5f7181; }
 /*
@@ -78,7 +79,9 @@ body {
 .btn.radiobtn.btn-default.active, 
 .btn.radiobtn.btn-default:hover, 
 .selectize-input.items:hover,
-.selectize-dropdown .active 
+.selectize-dropdown .active,
+.btn:hover,
+.btn.active
 { background: #414a58; 
   border-color: #414a58; }
 /*293c55  
@@ -87,10 +90,16 @@ body {
   .btn.radiobtn.btn-default, 
   .btn.radiobtn.btn-default.active, 
   .btn.radiobtn.btn-default:hover, 
+  .btn
   { color: white !important; }
 
 
-
+/* Estilos de botones desplegables (pickerInput) */
+.btn.active 
+{
+  color: black;
+  
+}
 
 
 .selectize-input {
