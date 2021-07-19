@@ -75,7 +75,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                              #force_edges = TRUE,
                              width= "100%",
                              choices = c("No", "2 días", "3 días", "4 días", "5 días",
-                                         "6 días", "1 semana", "2 semanas")
+                                         "6 días", "1 semana", "2 semanas", "3 semanas")
                            ),
                            
                            #br(),
@@ -141,7 +141,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                
                fluidRow(
                  column(12,
-                        hr(),
+                        #hr(),
                         column(3,
                                uiOutput("dato_mayor_aumento")
                         ),
@@ -156,7 +156,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         ),
                         column(12,
                                br(),
-                               hr(),
+                               #hr(),
                         )
                  )
                ),
@@ -193,7 +193,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                
                #fila 2
                fluidRow(
-                 hr(),
+                 #hr(),
                  column(3,
                         uiOutput("dato_covid_activos")
                  ),

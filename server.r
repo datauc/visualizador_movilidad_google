@@ -52,6 +52,7 @@ shinyServer(function(input, output, session) {
       left_join(provincias_comunas %>% select(provincia, region, comuna, codigo_comuna), by = "codigo_comuna")
   })
   
+  #—----
   
   #procesamiento ----
   
@@ -105,7 +106,7 @@ shinyServer(function(input, output, session) {
     return(cuarentenas_cambios)
     })
     
-    #suavizar
+    #media movil ----
     datos3 <- reactive({
       req(datos2())
     if (input$suavizar == "No") {
@@ -115,6 +116,8 @@ shinyServer(function(input, output, session) {
         dias <- 7
       } else if (input$suavizar == "2 semanas") {
         dias <- 14
+      } else if (input$suavizar == "3 semanas") {
+        dias <- 21
       } else {
         dias <- readr::parse_number(input$suavizar)
       }
@@ -127,12 +130,15 @@ shinyServer(function(input, output, session) {
       return(d3)
     })
     
+    
+    #—----
+    
     #graficar ----
     output$grafico_cuarentenas <- renderPlot({
     p <- datos3() %>% 
       ggplot()
     
-    #fondo de cuarentenas
+    #fondo de cuarentenas ----
     if (input$fondo == TRUE) {
       p <- p +
         #fondo
@@ -195,7 +201,7 @@ shinyServer(function(input, output, session) {
       guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.2), nrow = 2)) +
       guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), nrow = 3))
     
-    #poner subtítulo de región o provincia
+    #poner subtítulo de región o provincia ----
     if (input$selector_unidad_geo == "Región") {
       p <- p +
         labs(subtitle = paste("Región:", input$region))
