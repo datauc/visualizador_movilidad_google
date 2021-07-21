@@ -13,21 +13,42 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                   aos::use_aos(), 
                   includeCSS("estilos.css"), #estilos css
                   
+                  #header ----
                   fluidRow(
                     column(12,
-                           h1("Visualizador de movilidad de Google"), #%>% 
-                           #aos::aos(animation = "zoom-in", duration = "1000"),
-                           br(),
-                           p("Desarrollado por Data UC, Universidad Católica de Chile",
-                             style = "color: #5f7181 !important; font-family: Oswald; font-style: italic;") #%>% 
-                           #aos::aos(animation = "zoom-in", duration = "1000", delay = "100"),
+                           style = paste0("background-color:", celeste, ";"), 
+                           # column(
+                           #   9,
+                           #   h1(img(src="logo-uc-blanco.svg", width=200,
+                           #          #style = "padding-bottom: 40px"),
+                           #          style = "margin-top: -20px"),
+                           #      HTML("Visualizador de movilidad Google"),
+                           #      style = "padding:10px; color: white;"),
+                           #   #br(),
+                           #   p("Desarrollado por Data UC, Universidad Católica de Chile",
+                           #     style = "color: white !important; font-family: Oswald; font-style: italic;")
+                           # )
+                           column(2,
+                                  img(src="logo-uc-blanco.svg", width=200,
+                                    style = "padding: 15px; margin-top: -14px")
+                           ),
+                           column(10,
+                                h1("Visualizador de movilidad Google",
+                                   style = "padding:10px; margin-left: 20px;  color: white;"),
+                             p("Desarrollado por Data UC, Universidad Católica de Chile",
+                               style = "padding:10px; margin-left: 20px; margin-top: -20px; color: white; font-family: Roboto; font-style: italic;")
+                           )
+                    ),
+                    fluidRow(
+                      br(), p(" "), br()
                     )
                   ),
                   
                   #sidebar ----
                   fluidRow(
+                    br(),
                     column(4,
-                           h2("Menú de selección", icon("table")), #%>% 
+                           #h2("Menú de selección", icon("table")), #%>% 
                            #aos::aos(animation = "zoom-in", duration = "600"),
                            
                            #selectores ----
@@ -39,20 +60,20 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                            
                            #br(),
                            
-                           selectInput("comuna",
-                                       label = h4("Seleccione su comuna"),
+                           selectInput("provincia",
+                                       label = h4("Seleccione su provincia"),
                                        choices = NULL,
                                        width = "100%"
                            ),
                            
                            #br(),
                            
-                           shinyWidgets::radioGroupButtons("selector_unidad_geo",
-                                                           label = h4("Elegir nivel a graficar"),
-                                                           choices = c("Región", "Provincia"),
-                                                           selected = "Región",
-                                                           justified = TRUE,
-                                                           width = "100%"),
+                           # shinyWidgets::radioGroupButtons("selector_unidad_geo",
+                           #                                 label = h4("Elegir nivel a graficar"),
+                           #                                 choices = c("Región", "Provincia"),
+                           #                                 selected = "Región",
+                           #                                 justified = TRUE,
+                           #                                 width = "100%"),
                            
                            #br(),
                            
@@ -68,6 +89,23 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                            ),
                            
                            
+                           dateRangeInput(
+                             inputId = "fecha",
+                             label = h4("Seleccionar rango de fechas"),
+                             min = "2020-02-15", #ymd
+                             max = Sys.Date(),
+                             start = Sys.Date() - months(3),
+                             end = Sys.Date(),
+                             format = "dd-mm-yyyy",
+                             startview = "month",
+                             weekstart = 0,
+                             language = "es",
+                             separator = " hasta ",
+                             width = "100%",
+                             autoclose = TRUE
+                           ),
+                           
+                           
                            selectInput(
                              inputId = "suavizar",
                              label = h4("Suavizar datos con la media móvil"),
@@ -80,20 +118,21 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                            
                            #br(),
                            
-                           fluidRow(
-                             br(),
-                             column(6,
-                                    
-                                    shinyWidgets::prettySwitch(
-                                      inputId = "fondo",
-                                      label = "Cuarentenas", 
-                                      value = TRUE),
-                             ),
-                             column(6,
-                                    shinyWidgets::prettySwitch(
-                                      inputId = "covid",
-                                      label = "Casos Covid-19"), 
-                             )
+                                    # shinyWidgets::prettySwitch(
+                                    #   inputId = "fondo",
+                                    #   label = "Cuarentenas", 
+                                    #   value = TRUE),
+                                    # shinyWidgets::prettySwitch(
+                                    #   inputId = "covid",
+                                    #   label = "Casos Covid-19"), 
+                           br(),
+                           
+                           shinyWidgets::checkboxGroupButtons(
+                             inputId = "covid",
+                             #label = "Pobreza multidimensional:",
+                             label= NULL,
+                             choices = c("Mostrar casos activos Covid-19"),
+                             justified = TRUE
                            ),
                            #br(),
                            
@@ -106,84 +145,106 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                                     label = NULL, icon = icon("question-circle")
                                   )
                            )
-                    #fin columna sidebar       
+                           #fin columna sidebar       
                     ), #%>% 
                     #animación sidebar
                     #aos::aos(animation = "zoom-in", duration = "1000", delay = "100"),
                     
                     #body ----
                     column(8,
-                           
-                           fluidRow(
-                             column(12,
-                                    h2(icon("chart-line"), "Resultados principales") %>% 
-                                      aos::aos(animation = "zoom-in", duration = "600"), 
-                                    
-                                    br(),
-                                    
-                                    div(
-                                      HTML("Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google. Utilice los botones presentados a continuación para seleccionar las variables que le interesa graficar."),
-                                      
-                                      HTML("<p>Los datos son obtenidos y procesados desde 
+                           tabsetPanel(id = "tabs", type="pills",
+                                       #MOVILIDAD ----
+                                       tabPanel(title=HTML("&nbsp;&nbsp;&nbsp;&nbsp;Movilidad&nbsp;&nbsp;&nbsp;&nbsp;"), 
+                                                
+                                                fluidRow(
+                                                  column(12,
+                                                         h2(icon("chart-line"), "Resultados principales") %>% 
+                                                           aos::aos(animation = "zoom-in", duration = "600"), 
+                                                         
+                                                         br(),
+                                                         
+                                                         div(
+                                                           HTML("Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google. Utilice los botones presentados a continuación para seleccionar las variables que le interesa graficar."),
+                                                           
+                                                           HTML("<p>Los datos son obtenidos y procesados desde 
                     el sitio <em>Google Mobility Report</em>. 
                Para mayor información y datos sobre metodología, acceda al
-                    <a href='https://www.google.com/covid19/mobility/' 
-                       style='color: #999999'>
+                    <a href='https://www.google.com/covid19/mobility/'>
                     sitio web del Google Mobility Report</a></p>"),
-                                    ) %>% 
-               aos::aos(animation = "zoom-in", duration = "600")
-                             )
-                           ),
-                  
+                                                         ) %>% 
+                 aos::aos(animation = "zoom-in", duration = "600")
+                                                  )
+                                                ),
                
                
-               #datos 1 ----
                
-               fluidRow(
-                 column(12,
-                        #hr(),
-                        column(3,
-                               uiOutput("dato_mayor_aumento")
-                        ),
-                        column(3,
-                               uiOutput("dato_mayor_reduccion")
-                        ),
-                        column(3,
-                               uiOutput("dato_menor_movilidad")
-                        ),
-                        column(3,
-                               uiOutput("dato_mayor_movilidad")
-                        ),
-                        column(12,
-                               br(),
-                               #hr(),
-                        )
-                 )
-               ),
+               #datos 1 
+               
+               # fluidRow(
+               #   column(12,
+               #          #hr(),
+               #          column(3,
+               #                 uiOutput("dato_mayor_aumento")
+               #          ),
+               #          column(3,
+               #                 uiOutput("dato_mayor_reduccion")
+               #          ),
+               #          column(3,
+               #                 uiOutput("dato_menor_movilidad")
+               #          ),
+               #          column(3,
+               #                 uiOutput("dato_mayor_movilidad")
+               #          ),
+               #          column(12,
+               #                 br(),
+               #                 #hr(),
+               #          )
+               #   )
+               # ),
+               
+               #fecha
+               # fluidRow(
+               #   column(12,
+               #          dateRangeInput(
+               #            inputId = "fecha",
+               #            label = "Seleccionar rango de fechas",
+               #            min = "2020-02-15", #ymd
+               #            max = Sys.Date(),
+               #            start = Sys.Date() - months(3),
+               #            end = Sys.Date(),
+               #            format = "dd-mm-yyyy",
+               #            startview = "month",
+               #            weekstart = 0,
+               #            language = "es",
+               #            separator = " hasta ",
+               #            width = "100%",
+               #            autoclose = TRUE
+               #          ) %>% 
+               #            aos::aos(animation = "zoom-in", duration = "600"),
+               #   )
+               # ),
                
                #grafico ----
                fluidRow(
                  column(12,
-                        plotOutput("grafico_cuarentenas") %>% 
+                        h3("Movilidad a nivel nacional") %>% 
+                          aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                        plotOutput("grafico_pais") %>% 
                           shinycssloaders::withSpinner(),
-                        
                         br(),
-                        dateRangeInput(
-                          inputId = "fecha",
-                          label = "Seleccionar rango de fechas",
-                          min = "2020-02-15", #ymd
-                          max = Sys.Date(),
-                          start = Sys.Date() - months(3),
-                          end = Sys.Date(),
-                          format = "dd-mm-yyyy",
-                          startview = "month",
-                          weekstart = 0,
-                          language = "es",
-                          separator = " hasta ",
-                          width = "100%",
-                          autoclose = TRUE
-                        ),
                         
+                        h3("Movilidad a nivel regional") %>% 
+                          aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                        h5(textOutput("region_seleccionada")),
+                        plotOutput("grafico_region") %>% 
+                          shinycssloaders::withSpinner(),
+                        br(),
+                        
+                        h3("Movilidad a nivel provincial") %>% 
+                          aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                        h5(textOutput("provincia_seleccionada")),
+                        plotOutput("grafico_provincia") %>% 
+                          shinycssloaders::withSpinner()
                  )
                ),
                
@@ -212,32 +273,72 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         #hr(),
                  )
                )
+                                       ), #fin tab movilidad
+               
+               #CUARENTENAS ----
+               tabPanel(title=HTML("&nbsp;&nbsp;&nbsp;&nbsp;Cuarentenas&nbsp;&nbsp;&nbsp;&nbsp;"),
+                        
+                        fluidRow(
+                          column(12,
+                                 h2(icon("chart-area"), "Población en cuarentenas") %>% 
+                                   aos::aos(animation = "zoom-in", duration = "600"), 
+                                 
+                                 br()
+                          )
+                        ),
+                        
+                        #grafico ----
+                        fluidRow(
+                          column(12,
+                                 h3("Población en cuarentena a nivel nacional") %>% 
+                                   aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                                 plotOutput("cuarentenas_pais") %>% 
+                                   shinycssloaders::withSpinner(),
+                                 br(),
+                                 
+                                 h3("Población en cuarentena a nivel regional") %>% 
+                                   aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                                 h5(textOutput("region_seleccionada2")),
+                                 plotOutput("cuarentenas_region") %>% 
+                                   shinycssloaders::withSpinner(),
+                                 br(),
+                                 
+                                 h3("Población en cuarentena a nivel provincial") %>% 
+                                   aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                                 h5(textOutput("provincia_seleccionada2")),
+                                 plotOutput("cuarentenas_provincia") %>% 
+                                   shinycssloaders::withSpinner()
+                          )
+                        ),
+                        
+               ) #fin tab cuarentenas
+                           )#fin tabset
                     )
                   ), #fin fluidrow sidebar+body
                
-               
+               #—----
                #tablas ----
-               
-               fluidRow(
-                 column(12,
-                        hr(),
-                        h2(icon("table"), "Tablas de resumen") %>% 
-                          aos::aos(animation = "zoom-in", duration = "600")
-                 ),
-                 column(12,
-                        h3("Provincias con mayor movilidad por sector"),
-                        formattable::formattableOutput("tabla_mayor_movilidad")
-                 ),
-                 column(6,
-                        h3("Sectores con mayor movilidad promedio"),
-                        formattable::formattableOutput("tabla_sectores_mayor")
-                 ),
-                 column(6,
-                        h3("Movilidad promedio de las regiones"),
-                        formattable::formattableOutput("tabla_regiones_mayor")
-                 ),
-               ),
-              
+               # 
+               # fluidRow(
+               #   column(12,
+               #          hr(),
+               #          h2(icon("table"), "Tablas de resumen") %>% 
+               #            aos::aos(animation = "zoom-in", duration = "600")
+               #   ),
+               #   column(12,
+               #          h3("Provincias con mayor movilidad por sector"),
+               #          formattable::formattableOutput("tabla_mayor_movilidad")
+               #   ),
+               #   column(6,
+               #          h3("Sectores con mayor movilidad promedio"),
+               #          formattable::formattableOutput("tabla_sectores_mayor")
+               #   ),
+               #   column(6,
+               #          h3("Movilidad promedio de las regiones"),
+               #          formattable::formattableOutput("tabla_regiones_mayor")
+               #   ),
+               # ),
+               # 
                
                
                #footer ----
@@ -248,15 +349,12 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         em("Plataforma desarrollada por Data UC usando R y Shiny"), 
                         br(),
                         a(href = "https://www.mat.uc.cl", target = "blank", 
-                          style = "color: #5f7181",
                           "Facultad de Matemáticas - Pontificia Universidad Católica de Chile"),
                         HTML("<p>Desarrollo: 
-                    <a href='https://www.mat.uc.cl' 
-                       style='color: #5f7181'>
+                    <a href='https://www.mat.uc.cl'>
                      Sebastián Massa Slimming y Bastián Olea Herrera</a></p>"),
                     HTML("<p>Diseño y metodología: 
-                    <a href='https://www.mat.uc.cl' 
-                       style='color: #5f7181'>
+                    <a href='https://www.mat.uc.cl'>
                     Alejandro Jara Vallejos, Alexis Alvear Leyton y Mauricio Castro Cepero</a></p>"),
                     
                     tags$a(img(
@@ -270,6 +368,6 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                ) %>% 
                  #animación footer
                  aos::aos(animation = "zoom-in", duration = "1000", delay = "300"),
-                  
+               
 )
 )

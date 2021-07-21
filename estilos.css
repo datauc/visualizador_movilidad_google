@@ -2,6 +2,12 @@
 @import url('//fonts.googleapis.com/css?family=Oswald: 300, 400, 800');
 
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,400;0,700;1,100;1,400;1,700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700;800&display=swap');
+
+/* color normal: 0176DE */
+/* color destacado: 173F8A */
 
 .hero{
   background-color:#293c55!important;
@@ -9,59 +15,67 @@
 
 /*color gris del texto */
 h1, h2, g3, h4, h5
-{ color: #414a58; }
+{ color: #173F8A; }
 
 h1{
-  font-family: Oswald; 
+  font-family: 'Roboto Slab'; 
   font-size: 26pt; 
   font-weight:300;
 }
 
 h2{
-  font-family: Oswald; 
+  font-family: 'Roboto Slab'; 
   font-size: 17pt; 
   font-weight:600; !important
 }
 
 h3{
-  font-family: Oswald; 
+  font-family: Roboto; 
   font-size: 15pt; 
   font-weight:600;
+  color: #173F8A;
 }
 
 h4{
-  font-family: Oswald; 
+  font-family: Roboto; 
   font-size: 12pt; 
-  font-weight:500;
+  font-weight:700;
+}
+
+h5{
+  font-family: Roboto; 
+  font-size: 12pt; 
+  color: #0176DE;
 }
 
     /*links*/
  a {
-   font-family: Open Sans; 
+   font-family: Roboto; 
    font-weight:400, 
-   color: #5f7181 !important;
+   color: #0176DE !important;
+   text-decoration: underline;
  }
 
 body {
-  font-family: Open Sans; 
+  font-family: Roboto; 
   font-weight:400
   
 }
   
 .cifra_datos {
   /*font-family: 'Dosis', cursive;*/
-  font-family: Oswald; 
+  font-family: Roboto; 
   font-size: 22pt; 
   font-weight:300;
   /*font-weight: 600;*/
-  color: #414a58;
+  color: #173F8A;
     font-size: 300%;
     margin-bottom: -7px;
 }
 
 
 .texto_datos {
-  color: #5f7181; 
+  color: #0176DE; 
   margin-bottom: 0px; 
   font-size: 80%;
 }
@@ -71,8 +85,8 @@ body {
 .btn.radiobtn.btn-default, 
 .selectize-input.items,
 .btn
-{ background: #5f7181; 
-  border-color: #5f7181; }
+{ background: #0176DE; 
+  border-color: #0176DE; }
 /*
 0176de
 /* color de realce botoneras */
@@ -82,9 +96,11 @@ body {
 .selectize-dropdown .active,
 .btn:hover,
 .btn.active
-{ background: #414a58; 
-  border-color: #414a58; }
+{ background: #173F8A !important; 
+  border-color: #173F8A !important; }
 /*293c55  
+
+
 
   /* color de texto botoneras */ 
   .btn.radiobtn.btn-default, 
@@ -150,32 +166,79 @@ body {
 
 
 
+
+
+
+
 /*Estilo selector de fechas*/
-.datepicker {font-size: 10px; 
-background: white; 
+.datepicker {
+  font-size: 10px;   
+background: white; /* fondo */ 
 font-size: 10pt; 
-color: #414a58;} /* fondo del calendario */
+color: #173F8A;} /* color del texto */
 
-               /*fecha seleccionada */
-               .datepicker table tr td.active:active, 
-               .datepicker table tr td.active.highlighted:active, 
-               .datepicker table tr td.active.active, 
-               .datepicker table tr td.active.highlighted.active {
-                  background-color: #5f7181; color: white;
-               }
 
-               
-               /*hover sobre fecha seleccionada */
-               .datepicker table tr td.active:hover:active, 
-               .datepicker table tr td.active.disabled:active, 
-               .datepicker table tr td.active.disabled:hover:active, 
-               .datepicker table tr td.active:hover.active, 
-               .datepicker table tr td.active.disabled.active, 
-               .datepicker table tr td.active.disabled:hover.active  {
-                  background-color: #414a58; color: white;
-               } 
-               
-               /*hover sobre otras fechas */
-               .datepicker table tr td.day:hover {
-                  background-color: #414a58; color: white;
-               }
+/* color de la barra de al medio que dice 'hasta' */
+.input-group-addon {
+  background-color: #0176DE !important;
+  border-color: #0176DE !important;
+  color: white !important;
+}
+
+/*fecha seleccionada */
+.datepicker table tr td.active:active, 
+.datepicker table tr td.active.highlighted:active, 
+.datepicker table tr td.active.active, 
+.datepicker table tr td.active.highlighted.active {
+  background-color: #0176DE !important; color: white;
+}
+
+
+/*hover sobre fecha seleccionada */
+.datepicker table tr td.active:hover:active, 
+.datepicker table tr td.active.disabled:active, 
+.datepicker table tr td.active.disabled:hover:active, 
+.datepicker table tr td.active:hover.active, 
+.datepicker table tr td.active.disabled.active, 
+.datepicker table tr td.active.disabled:hover.active  {
+  background-color: #173F8A !important; color: white;
+} 
+
+/*hover sobre otras fechas */
+.datepicker table tr td.day:hover {
+  background-color: #173F8A !important; color: white;
+}
+
+
+
+
+
+
+
+/*pestañas*/
+
+/* espaciado entre pestañas */ 
+.tabbable > .nav > li > a {
+  margin-right: 12px; 
+  margin-bottom: 8px
+}
+
+/* inactiva */
+.tabbable > .nav > li > a {
+  background-color: #0176DE; 
+  color: white;
+  text-decoration: none;
+} 
+  
+/* seleccionada */
+.tabbable > .nav > li[class=active] > a {
+  background-color: #173F8A; 
+  font-weight: 600; 
+  color: white
+} 
+  
+/* hover */
+.tabbable > .nav > li > a:hover {
+  background-color: #173F8A; 
+  color: white
+} 

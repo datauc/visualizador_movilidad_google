@@ -1,0 +1,121 @@
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted
+[1] "2021-07-16"
+Error in select(., region, provincia, comuna, codigo_comuna) : 
+  object 'provincias_comunas' not found
+Calls: %>% ... same_src.data.frame -> is.data.frame -> %>% -> select
+Execution halted

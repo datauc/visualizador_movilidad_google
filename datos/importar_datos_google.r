@@ -1,7 +1,7 @@
 #setwd("~/Movilidad/Google/visualizador_movilidad_google/")
 setwd("~/Movilidad/Google/visualizador_movilidad_google")
 
-library(dplyr)
+suppressPackageStartupMessages(library(dplyr))
 
 # #descargar archivo completo
 # download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", 

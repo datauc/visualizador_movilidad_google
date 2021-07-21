@@ -218,7 +218,7 @@ cuarentenas <- readr::read_csv("https://github.com/MinCiencia/Datos-COVID19/raw/
   mutate(etapa = forcats::fct_reorder(etapa, etapa_n)) %>% 
   mutate(fecha = lubridate::ymd(fecha)) %>% 
   #anexar provincias y comunas a partir del codigo de comuna
-  left_join(provincias_comunas %>% select(provincia, comuna, codigo_comuna), by = "codigo_comuna")
+  left_join(provincias_comunas %>% select(region, provincia, comuna, codigo_comuna), by = "codigo_comuna")
 
 
 comuna = "La Florida"
@@ -548,3 +548,96 @@ filter(lubridate::year(fecha) == 2020)
 #Botón de descarga
 #Texto que interprete el resultado 
 
+#—----
+
+#cuarentenas (Jara) ----
+
+load("~/Movilidad/Google/visualizador_movilidad_google/datos/provincias_comunas.rdata")
+load("datos/cuarentenas_diarias.rdata")
+load("datos/comunas.rdata")
+
+
+
+
+library(ggplot2)
+
+#por provincia ----
+cuarentenas_provincia <- cuarentenas %>% 
+  select(fecha, etapa, comuna, provincia, region) %>% 
+  #limpiar comunas, anexar población
+  distinct(region, comuna, fecha, .keep_all = T) %>%
+  left_join(comunas %>% select(comuna, poblacion)) %>% 
+  #arrange(fecha, region) %>% 
+  #calcular provincia desde comunas
+  group_by(provincia, fecha, etapa) %>% 
+  summarize(poblacion = sum(poblacion))
+
+cuarentenas_provincia %>% 
+  filter(provincia == "Santiago") %>% 
+  group_by(fecha, provincia) %>% 
+  mutate(porcentaje = poblacion/sum(poblacion)) %>% 
+  ggplot(aes(fecha, porcentaje, fill = etapa)) +
+  geom_col()
+
+#por región ----
+tictoc::tic()
+cuarentenas_region <- cuarentenas %>% 
+  select(fecha, etapa, comuna, provincia, region) %>% 
+  #limpiar comunas, anexar población
+  distinct(region, comuna, fecha, .keep_all = T) %>%
+  left_join(comunas %>% select(comuna, poblacion)) %>% 
+  #arrange(fecha, region) %>% 
+  #calcular region desde comunas
+  group_by(region, fecha, etapa) %>% 
+  summarize(poblacion = sum(poblacion))
+tictoc::toc()
+  
+cuarentenas_region %>% 
+  filter(region == "Maule") %>% 
+  group_by(fecha, region) %>% 
+  mutate(porcentaje = poblacion/sum(poblacion)) %>% 
+  ggplot(aes(fecha, porcentaje, fill = etapa)) +
+  geom_col()
+
+#país ----
+tictoc::tic()
+cuarentenas_pais <- cuarentenas %>%
+  select(fecha, etapa, comuna, provincia, region) %>% 
+  #limpiar comunas, anexar población
+  distinct(region, comuna, fecha, .keep_all = T) %>%
+  left_join(comunas %>% select(comuna, poblacion)) %>% 
+  #arrange(fecha, region) %>% 
+  # #calcular provincia desde comunas
+  # group_by(region, provincia, fecha, etapa) %>% 
+  # summarize(poblacion = sum(poblacion)) %>% 
+  # #calcular region desde provincias
+  # group_by(region, fecha, etapa) %>% 
+  # summarize(poblacion = sum(poblacion, na.rm=T)) %>%
+  #calcular país
+  group_by(fecha, etapa) %>% 
+  summarize(poblacion = sum(poblacion, na.rm=T))
+tictoc::toc()
+
+cuarentenas_pais %>% 
+  group_by(fecha) %>% 
+  mutate(porcentaje = poblacion/sum(poblacion),
+         total = sum(poblacion)) %>% 
+  ggplot(aes(fecha, porcentaje, fill = etapa)) +
+  geom_col(width = 1, alpha = 0.6, show.legend = F) +
+  scale_y_continuous(labels = function (x) paste0(x*100, "%")) +
+  theme_minimal() +
+  theme(text = element_text(family = "Open Sans", color = gris_oscuro),
+        panel.grid = element_blank(),
+        axis.title.y = element_text(family = "Open Sans", size = 10),
+        axis.text.y = element_text(margin = margin(r=-5), family = "Oswald"),
+        axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = "bottom") +
+  labs(y = "Porcentaje de la población\nen cada etapa de cuarentena") +
+  geom_point(aes(fecha, porcentaje, col = etapa), size = 0, alpha = 0) +
+scale_x_date(date_breaks = "months", date_labels = "%b", 
+             expand = expansion(mult = c(0,0))) +
+  scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red")),
+                    aesthetics = c("color", "fill")) +
+  guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.6), nrow = 2)) +
+guides(col = guide_legend(override.aes = list(size = 5, alpha=0.6, fill=NA, text=NA), nrow = 2))
