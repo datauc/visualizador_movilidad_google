@@ -250,21 +250,21 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         h3("Movilidad a nivel nacional"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         plotOutput("grafico_pais", height = "350px") %>% 
-                          shinycssloaders::withSpinner(),
+                          shinycssloaders::withSpinner(hide.ui = F),
                         br(),
                         
                         h3("Movilidad a nivel regional"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("region_seleccionada")),
                         plotOutput("grafico_region", height = "350px") %>% 
-                          shinycssloaders::withSpinner(),
+                          shinycssloaders::withSpinner(hide.ui = F),
                         br(),
                         
                         h3("Movilidad a nivel provincial"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("provincia_seleccionada")),
                         plotOutput("grafico_provincia", height = "350px") %>% 
-                          shinycssloaders::withSpinner()
+                          shinycssloaders::withSpinner(hide.ui = F)
                  )
                ),
                
@@ -313,21 +313,21 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                                  h3("Población en cuarentena a nivel nacional"), #%>% 
                                    #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                                  plotOutput("cuarentenas_pais_g") %>% 
-                                   shinycssloaders::withSpinner(),
+                                   shinycssloaders::withSpinner(hide.ui = F),
                                  br(),
                                  
                                  h3("Población en cuarentena a nivel regional"), #%>% 
                                    #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                                  h5(textOutput("region_seleccionada2")),
                                  plotOutput("cuarentenas_region_g") %>% 
-                                   shinycssloaders::withSpinner(),
+                                   shinycssloaders::withSpinner(hide.ui = F),
                                  br(),
                                  
                                  h3("Población en cuarentena a nivel provincial"), #%>% 
                                    #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                                  h5(textOutput("provincia_seleccionada2")),
                                  plotOutput("cuarentenas_provincia_g") %>% 
-                                   shinycssloaders::withSpinner()
+                                   shinycssloaders::withSpinner(hide.ui = F)
                           )
                         ),
                         

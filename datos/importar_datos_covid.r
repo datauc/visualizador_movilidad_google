@@ -1,4 +1,6 @@
 #importar datos de covid activos diariamente
+cat(paste("Importar datos covid, ejecutando el", lubridate::now()), fill = T)
+
 suppressPackageStartupMessages(library(dplyr))
 
 setwd("~/Movilidad/Google/visualizador_movilidad_google")
@@ -12,7 +14,7 @@ covid_diarios <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activo
 
 save(covid_diarios, file = "datos/covid_diarios.rdata")
 
-max(covid_diarios$fecha)
+cat(paste("Fecha max activos", max(covid_diarios$fecha)), fill = T)
 
 #cuarentenas ----
 cuarentenas <- readr::read_csv("https://github.com/MinCiencia/Datos-COVID19/raw/master/output/producto74/paso_a_paso.csv",
@@ -31,4 +33,4 @@ cuarentenas <- readr::read_csv("https://github.com/MinCiencia/Datos-COVID19/raw/
 
 save(cuarentenas, file = "datos/cuarentenas_diarias.rdata")
 
-max(cuarentenas$fecha)
+cat(paste("Fecha max cuarentenas", max(cuarentenas$fecha)), fill = T)

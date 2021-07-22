@@ -10,12 +10,14 @@
 /* color destacado: 173F8A */
 
 .hero{
-  background-color:#293c55!important;
+  background-color:#293c55 !important;
 }
 
 /*color gris del texto */
 h1, h2, g3, h4, h5
-{ color: #173F8A; }
+{ 
+  color: #173F8A; 
+}
 
 h1{
   font-family: 'Roboto Slab'; 

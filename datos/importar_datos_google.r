@@ -1,3 +1,5 @@
+cat(paste("Importar datos de movilidad Google, ejecutando el", lubridate::now()), fill = T)
+
 #setwd("~/Movilidad/Google/visualizador_movilidad_google/")
 setwd("~/Movilidad/Google/visualizador_movilidad_google")
 
@@ -23,22 +25,15 @@ unzip(zipfile = paste0("datos/movilidad_regional/reporte_regional.zip"),
 #cargar archivo
 cat("CARGA...", fill=T)
 movilidad <- readr::read_csv(paste0("datos/movilidad_regional/", lubridate::today(), 
-                       "/2021_CL_Region_Mobility_Report.csv"))
-                       #col_types = readr::cols())
+                       "/2021_CL_Region_Mobility_Report.csv"),
+                       col_types = readr::cols())
 
 movilidad_2020 <- readr::read_csv(paste0("datos/movilidad_regional/", "2020",
-                                         "/2020_CL_Region_Mobility_Report.csv"))
+                                         "/2020_CL_Region_Mobility_Report.csv"),
+                                  col_types = readr::cols())
+
 #max(movilidad$date)
-# #filtrar solo chile
-# movilidad <- movilidad %>% 
-#   filter(country_region == "Chile")
 
-# #reescribir archivo completo
-# readr::write_csv(movilidad, file = paste0("Reporte movilidad global/", 
-#                                           "movilidad_google_", lubridate::today(), ".csv"))
-
-# movilidad <- readr::read_csv(file = paste0("Reporte movilidad global/", 
-#                                           "movilidad_google_", lubridate::today(), ".csv"))
 
 #eliminar archivo comprimido
 file.remove("datos/movilidad_regional/reporte_regional.zip")
@@ -77,5 +72,9 @@ movilidad <- movilidad %>%
                          "Araucania" = "La Araucanía",
                          "Bio Bio" = "Biobío"))
 
+cat(paste("Fecha max movilidad", max(movilidad$fecha)), fill = T)
+
 #guardar
 save(movilidad, file = "~/Movilidad/Google/visualizador_movilidad_google/movilidad.rdata")
+
+cat("OK", fill = T)

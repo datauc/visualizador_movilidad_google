@@ -239,3 +239,7 @@ In addition: Warning message:
 In readChar(con, 5L, useBytes = TRUE) :
   cannot open compressed file 'data/provincias_comunas.rdata', probable reason 'No such file or directory'
 Execution halted
+[1] "2021-07-19"
+[1] "2021-07-22"
+[1] "2021-07-19"
+[1] "2021-07-22"
