@@ -40,6 +40,9 @@ movilidad_2020 <- readr::read_csv(paste0("datos/movilidad_regional/", "2020",
 # movilidad <- readr::read_csv(file = paste0("Reporte movilidad global/", 
 #                                           "movilidad_google_", lubridate::today(), ".csv"))
 
+#eliminar archivo comprimido
+file.remove("datos/movilidad_regional/reporte_regional.zip")
+
 #limpiar ----
 cat("LIMPIEZA...", fill=T)
 
