@@ -5,12 +5,12 @@ library(ggplot2)
 
 Sys.setlocale(category = "LC_TIME", locale="es_ES.UTF-8") #meses en español
 
-#cargar lista de provincias/regiones/comunas
+#datos ----
 load("datos/provincias_comunas.rdata")
 load("datos/comunas.rdata")
 load("movilidad.rdata")
 
-#colores
+#colores ----
 gris_claro <- "#5f7181"
 gris_oscuro <- "#414a58"
 
@@ -19,12 +19,7 @@ celeste <- "#0176DE"
 azul <- "#173F8A"
 azul_oscuro <- "#03122E"
 
-# scales::show_col(
-# c("#dc0073", "#008bf8", "#ff4e00", #"#90e39a", 
-#   "#6a4c93", "#04e762", "#f5b700"
-#   ))
-
-
+#selectores----
 #provincias_comunas$region %>% unique()  %>% sort() %>% dput()
 regiones <- c("Metropolitana de Santiago", "Antofagasta", "Arica y Parinacota", "Atacama", "Aysén del Gral. C. Ibáñez del Campo", 
               "Biobío", "Coquimbo", "La Araucanía", "Lib. Gral. Bernardo O'Higgins", 
@@ -148,7 +143,43 @@ custom_color_tile <- function (...)
 }
 
 
+#piezas gráficos ----
 
+#gráfico base
+g_base <- list(
+  geom_hline(yintercept = 0, size = 0.4, alpha = 0.7),
+  geom_hline(yintercept = 50, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  geom_hline(yintercept = -50, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  #lineas
+  geom_line(aes(fecha, valor, col = sector), size = 1, show.legend = F),
+  geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0),
+  scale_x_date(date_breaks = "months", date_labels = "%b", 
+               expand = expansion(mult = c(0,0)))
+)
+
+#eje normal del índice de movilidad
+g_primer_eje <- list(
+  scale_y_continuous(labels = function (x) paste0(x, "%"), 
+                     breaks = c(-75, -50, -25, 0, 25, 50, 75))
+)
+
+#gráfico base con transformaciones para poner fondo de cuarentenas
+g_base_2 <- list(
+  geom_hline(yintercept = 0+100, size = 0.4, alpha = 0.7),
+  geom_hline(yintercept = 50+100, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  geom_hline(yintercept = -50+100, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  #lineas
+  geom_line(aes(fecha, valor+100, col = sector), size = 1, show.legend = F),
+  geom_point(aes(fecha, valor+100, col = sector), size = 0, alpha = 0),
+  scale_x_date(date_breaks = "months", date_labels = "%b", 
+               expand = expansion(mult = c(0,0)))
+)
+
+#eje normal con transformaciones
+g_primer_eje_2 <- list(
+  scale_y_continuous(labels = function (x) paste0(x-100, "%"), 
+                     breaks = c(-75, -50, -25, 0, 25, 50, 75)+100)
+)
 
 g_escalas <- list(
   scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red"))),
@@ -169,26 +200,12 @@ g_temas <- list(
         plot.title = element_text(family = "Oswald"),
         axis.title.y = element_text(family = "Open Sans", size = 10),
         axis.text.y = element_text(family = "Oswald")),
-  guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.2), nrow = 2)),
+  guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2)),
   guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), nrow = 2))
 )
 
-g_base <- list(
-  geom_hline(yintercept = 0, size = 0.4, alpha = 0.7),
-    geom_hline(yintercept = 50, size = 0.3, alpha = 0.4, linetype = "dashed"),
-    geom_hline(yintercept = -50, size = 0.3, alpha = 0.4, linetype = "dashed"),
-    #lineas
-    geom_line(aes(fecha, valor, col = sector), size = 1, show.legend = F),
-    geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0),
-    scale_x_date(date_breaks = "months", date_labels = "%b", 
-                 expand = expansion(mult = c(0,0)))
-)
 
-g_primer_eje <- list(
-  scale_y_continuous(labels = function (x) paste0(x, "%"), 
-                     breaks = c(-75, -50, -25, 0, 25, 50, 75))
-)
-
+#piezas para gráficos de cuarentenas
 g_cuarentenas <- list(
   geom_col(width = 1, alpha = 0.6, show.legend = F),
     scale_y_continuous(labels = function (x) paste0(x*100, "%")),

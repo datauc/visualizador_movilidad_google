@@ -536,17 +536,69 @@ movilidad %>%
 
 #—----
 
-#Casos actuales
-readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna")
+movilidad %>% 
+  group_by(fecha, sector) %>% 
+  summarize(valor = mean(valor, na.rm = T))
+
+
+
+
+movilidad %>% filter(provincia == "Cordillera") %>% tally()
+
+movilidad %>% filter(is.na(region))
+
+
+
+
+
 
 movilidad %>% 
-filter(lubridate::year(fecha) == 2020)
+  filter(is.na(region)) %>%
+  arrange(fecha) %>%
+  mutate(valor = media_movil(valor, "3 días"))
 
-#Peak de casos
-#Anti peak de casos
-#Etapa de la comuna
-#Botón de descarga
-#Texto que interprete el resultado 
+covid_activos <-   readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna",
+                                   col_types = readr::cols())
+
+covid_activos %>% 
+  left_join(provincias_comunas %>% select(comuna, provincia)) %>% 
+  group_by(fecha, provincia) %>% 
+  summarize(casos = sum(casos, na.rm = T)) %>% 
+  filter(provincia == "Chacabuco") %>% 
+  filter(fecha >= lubridate::dmy("20-04-2021")) %>% 
+  ggplot(aes(fecha, casos)) +
+  geom_line()
+
+
+
+covid_diarios <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna",
+                                 col_types = readr::cols()) %>% 
+  select(fecha, region, comuna, casos)
+
+
+save(covid_diarios, file = "datos/covid_diarios.rdata")
+
+
+#—----
+
+cuarentenas_pais %>% 
+  #group_by(fecha) %>% 
+  mutate(porcentaje_e = scales::rescale(porcentaje, 
+                                        #from = c(0, 1), 
+                                        to = c(0, 150))) %>% 
+  ggplot(aes(fecha, porcentaje_e, fill = etapa)) +
+  geom_area()
+
+movilidad %>% 
+  filter(is.na(region)) %>% 
+  mutate(unidad = "País") %>% 
+  #filter(sector %in% input$sector) %>% #filtrar sectores
+  mutate(valor = media_movil(valor, "No")) %>% #media móvil
+  ggplot() +
+  geom_col(data = cuarentenas_pais, aes(fecha, (porcentaje_escalado), fill = etapa),
+           alpha = 0.3, position = position_stack()) +
+  g_base
+
 
 #—----
 
@@ -641,3 +693,71 @@ scale_x_date(date_breaks = "months", date_labels = "%b",
                     aesthetics = c("color", "fill")) +
   guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.6), nrow = 2)) +
 guides(col = guide_legend(override.aes = list(size = 5, alpha=0.6, fill=NA, text=NA), nrow = 2))
+
+
+
+# prueba mezcla ----
+#transformar ejes para poder poner gráfico de fondo
+
+
+
+covid_pais <- covid_diarios %>% 
+  #filter(fecha >= input$fecha[1], 
+  #       fecha <= input$fecha[2]) %>% 
+  group_by(fecha) %>% 
+  summarize(casos = sum(casos, na.rm = T))
+
+### pais()
+movilidad %>% 
+  filter(is.na(region)) %>% 
+  mutate(unidad = "País") %>% 
+  filter(sector %in% c("Transporte público", "Viviendas")) %>% #filtrar sectores
+  mutate(valor = media_movil(valor, "No")) %>% 
+###
+  ggplot() +
+  #cuarentenas
+  geom_col(data = cuarentenas_pais, aes(fecha, (porcentaje*100)+25, fill=etapa), 
+           width = 1, alpha = 0.4) +
+  g_base_2 +
+  #limites horizontales
+  #coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
+  coord_cartesian(ylim = c(0, 200), expand = 0) +
+###
+  #escalas y tema
+  g_escalas +
+  g_temas +
+  #eje normal
+  g_primer_eje_2 +
+###
+#linea de covid
+geom_line(data = covid_pais, #covid_pais(), 
+          aes(fecha, scales::rescale(casos, to=c(10, 190))), 
+          size = 0.6, alpha=0.6) +
+          #linetype = "dashed", lineend="round") +
+  #g_segundo_eje
+  scale_y_continuous(labels = function (x) paste0(x-100, "%"), 
+                     breaks = c(-75, -50, -25, 0, 25, 50, 75)+100,
+                     #eje y secundario
+                     #sec.axis = sec_axis(~., #breaks = 0, 
+                     #sec.axis = sec_axis(~covid_pais()$casos,
+                     sec.axis = sec_axis(~ scales::rescale(., to=c(0, max(covid_pais$casos))), #from=c(0, max(.))),
+                                         breaks = scales::breaks_extended(6), #breaks covid
+                                         #labels = function (x) ifelse(x<0, "", x), #eliminar negativos
+                                         name = "Casos activos de Covid-19"
+                     ))
+cuarentenas_pais
+
+cuarentenas_region %>% 
+  filter(region == "Metropolitana de Santiago") %>% 
+  group_by(fecha) %>% 
+  mutate(porcentaje = poblacion/sum(poblacion)) %>% 
+  mutate(total = sum(porcentaje)) %>% 
+  print(n=50)
+
+cuarentenas_provincia %>% 
+  arrange(desc(fecha)) %>% 
+  filter(provincia == "Melipilla") %>% 
+  group_by(fecha) %>% 
+  mutate(porcentaje = poblacion/sum(poblacion)) %>% 
+  mutate(total = sum(porcentaje)) %>% 
+  print(n=50)

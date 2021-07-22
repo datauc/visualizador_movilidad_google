@@ -13,6 +13,19 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                   aos::use_aos(), 
                   includeCSS("estilos.css"), #estilos css
                   
+                  #detectar tamaño de la ventana
+                  tags$head(tags$script('
+                                var dimension = [0, 0];
+                                $(document).on("shiny:connected", function(e) {
+                                    dimension[0] = window.innerWidth;
+                                    Shiny.onInputChange("dimension", dimension);
+                                });
+                                $(window).resize(function(e) {
+                                    dimension[0] = window.innerWidth;
+                                    Shiny.onInputChange("dimension", dimension);
+                                });
+                            ')), #input$dimension[1]
+                  
                   #header ----
                   fluidRow(
                     column(12,
@@ -129,12 +142,19 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                            
                            shinyWidgets::checkboxGroupButtons(
                              inputId = "covid",
-                             #label = "Pobreza multidimensional:",
                              label= NULL,
                              choices = c("Mostrar casos activos Covid-19"),
                              justified = TRUE
                            ),
-                           #br(),
+                           
+                           br(),
+                           
+                           shinyWidgets::checkboxGroupButtons(
+                             inputId = "fondo",
+                             label= NULL,
+                             choices = c("Mostrar etapas de cuarentena"),
+                             justified = TRUE
+                           ),
                            
                            
                            column(12, align="right",
@@ -227,23 +247,23 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                #grafico ----
                fluidRow(
                  column(12,
-                        h3("Movilidad a nivel nacional") %>% 
-                          aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                        plotOutput("grafico_pais") %>% 
+                        h3("Movilidad a nivel nacional"), #%>% 
+                          #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                        plotOutput("grafico_pais", height = "350px") %>% 
                           shinycssloaders::withSpinner(),
                         br(),
                         
-                        h3("Movilidad a nivel regional") %>% 
-                          aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                        h3("Movilidad a nivel regional"), #%>% 
+                          #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("region_seleccionada")),
-                        plotOutput("grafico_region") %>% 
+                        plotOutput("grafico_region", height = "350px") %>% 
                           shinycssloaders::withSpinner(),
                         br(),
                         
-                        h3("Movilidad a nivel provincial") %>% 
-                          aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                        h3("Movilidad a nivel provincial"), #%>% 
+                          #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("provincia_seleccionada")),
-                        plotOutput("grafico_provincia") %>% 
+                        plotOutput("grafico_provincia", height = "350px") %>% 
                           shinycssloaders::withSpinner()
                  )
                ),
@@ -290,23 +310,23 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         #grafico ----
                         fluidRow(
                           column(12,
-                                 h3("Población en cuarentena a nivel nacional") %>% 
-                                   aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                                 plotOutput("cuarentenas_pais") %>% 
+                                 h3("Población en cuarentena a nivel nacional"), #%>% 
+                                   #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                                 plotOutput("cuarentenas_pais_g") %>% 
                                    shinycssloaders::withSpinner(),
                                  br(),
                                  
-                                 h3("Población en cuarentena a nivel regional") %>% 
-                                   aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                                 h3("Población en cuarentena a nivel regional"), #%>% 
+                                   #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                                  h5(textOutput("region_seleccionada2")),
-                                 plotOutput("cuarentenas_region") %>% 
+                                 plotOutput("cuarentenas_region_g") %>% 
                                    shinycssloaders::withSpinner(),
                                  br(),
                                  
-                                 h3("Población en cuarentena a nivel provincial") %>% 
-                                   aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+                                 h3("Población en cuarentena a nivel provincial"), #%>% 
+                                   #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                                  h5(textOutput("provincia_seleccionada2")),
-                                 plotOutput("cuarentenas_provincia") %>% 
+                                 plotOutput("cuarentenas_provincia_g") %>% 
                                    shinycssloaders::withSpinner()
                           )
                         ),

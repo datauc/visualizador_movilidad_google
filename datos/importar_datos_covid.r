@@ -3,6 +3,8 @@ suppressPackageStartupMessages(library(dplyr))
 
 setwd("~/Movilidad/Google/visualizador_movilidad_google")
 
+load("datos/provincias_comunas.rdata")
+
 #casos activos ----
 covid_diarios <- readr::read_csv("https://coronavirus-api.mat.uc.cl/casos_activos_sintomas_comuna",
                                  col_types = readr::cols()) %>% 
