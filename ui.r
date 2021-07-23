@@ -360,6 +360,21 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                # ),
                # 
                
+               #descarga ----
+               
+               fluidRow(
+                 column(12,
+                        div(
+                          downloadButton(outputId = "descarga", 
+                                       label = HTML("&nbsp;&nbsp;descargar datos"), 
+                                       icon = icon("file-download"),
+                                       style = "text-decoration: none !important;"
+                                       ), 
+                            align = "center"),      
+                        br()
+                 )
+               ),
+               
                
                #footer ----
                

@@ -3,7 +3,9 @@
 .RData
 .Ruserdata
 
+movilidad.rdata
 datos/Reporte movilidad global/
 datos/importar_datos_google.log
+datos/importar_datos_covid.log
 datos/movilidad_regional/
 datos/movilidad_regional/reporte_regional.zip

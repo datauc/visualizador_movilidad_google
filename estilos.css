@@ -244,3 +244,12 @@ color: #173F8A;} /* color del texto */
   background-color: #173F8A; 
   color: white
 } 
+
+
+.botondescarga .bttn-primary .bttn-primary:hover {
+  text-decoration: none !important;
+  font-size: 10pt; 
+}
+/*#color de botones de descarga
+            tags$style(".botondescarga .bttn-primary{background-color: #E8EEEC; color: #175742; }
+                .botondescarga .bttn-primary:hover{background-color: #175742; color: #175742}"),*/

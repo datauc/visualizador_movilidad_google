@@ -637,6 +637,34 @@ shinyServer(function(input, output, session) {
   #   return(d)
   # })
   
+  #descarga ----
+  
+  lista_descargas <- reactive({
+    list(
+    "Movilidad país" = pais() %>% select(-region, -provincia, -provincia_cod),
+    "Movilidad región" = region() %>% select(-provincia_cod, -provincia, region = unidad),
+    "Movilidad provincia" = provincia() %>% select(-provincia_cod, provincia = unidad),
+    "Cuarentenas país" = cuarentenas_pais,
+    "Cuarentenas región" = cuarentenas_region_f(),
+    "Cuarentenas provincia" = cuarentenas_provincia_f()
+    )
+  })
+    
+  
+  output$descarga <- downloadHandler(
+    filename = paste0("Movilidad Google ", lubridate::today(), ".xlsx"),
+    content = function(filename) {
+      writexl::write_xlsx(
+      #openxlsx::write.xlsx(
+        x = lista_descargas(), path = filename
+      )
+        #colWidths = "auto", borders = "surrounding"
+        #headerStyle = openxlsx::createStyle(textDecoration = "BOLD", fontName = "Arial")) 
+      }, 
+    contentType = "application/xlsx")
+  
+  
+  
   #tabla ----
   
 #   #provincias mayor movilidad
