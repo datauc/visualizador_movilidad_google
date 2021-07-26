@@ -716,7 +716,9 @@ movilidad %>%
 ###
   ggplot() +
   #cuarentenas
-  geom_col(data = cuarentenas_pais, aes(fecha, (porcentaje*100)+25, fill=etapa), 
+  geom_col(data = cuarentenas_pais %>% group_by(fecha) %>% 
+             mutate(porcentaje = poblacion/sum(poblacion),
+                    total = sum(poblacion)), aes(fecha, (porcentaje*100)+25, fill=etapa), 
            width = 1, alpha = 0.4) +
   g_base_2 +
   #limites horizontales
@@ -745,6 +747,7 @@ geom_line(data = covid_pais, #covid_pais(),
                                          #labels = function (x) ifelse(x<0, "", x), #eliminar negativos
                                          name = "Casos activos de Covid-19"
                      ))
+
 cuarentenas_pais
 
 cuarentenas_region %>% 
@@ -761,3 +764,4 @@ cuarentenas_provincia %>%
   mutate(porcentaje = poblacion/sum(poblacion)) %>% 
   mutate(total = sum(porcentaje)) %>% 
   print(n=50)
+

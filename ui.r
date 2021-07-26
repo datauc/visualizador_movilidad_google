@@ -65,46 +65,30 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                            #aos::aos(animation = "zoom-in", duration = "600"),
                            
                            #selectores ----
+                           shinyWidgets::pickerInput("sector",
+                                                     label = h4("Categoría de lugar"),
+                                                     multiple = TRUE,
+                                                     #selectize = F,
+                                                     choices = sectores,
+                                                     selected = c("Lugares de trabajo"),
+                                                     width = "100%"
+                           ),
+                           
                            selectInput("region",
-                                       label = h4("Seleccione su región"),
+                                       label = h4("Región"),
                                        choices = regiones,
                                        width = "100%"
                            ),
                            
-                           #br(),
-                           
                            selectInput("provincia",
-                                       label = h4("Seleccione su provincia"),
+                                       label = h4("Provincia"),
                                        choices = NULL,
                                        width = "100%"
                            ),
                            
-                           #br(),
-                           
-                           # shinyWidgets::radioGroupButtons("selector_unidad_geo",
-                           #                                 label = h4("Elegir nivel a graficar"),
-                           #                                 choices = c("Región", "Provincia"),
-                           #                                 selected = "Región",
-                           #                                 justified = TRUE,
-                           #                                 width = "100%"),
-                           
-                           #br(),
-                           
-                           shinyWidgets::pickerInput("sector",
-                                                     label = h4("Seleccione un sector"),
-                                                     multiple = TRUE,
-                                                     #selectize = F,
-                                                     choices = sectores,
-                                                     selected = c("Viviendas", 
-                                                                  "Lugares de trabajo",
-                                                                  "Retail y recreación"),
-                                                     width = "100%"
-                           ),
-                           
-                           
                            dateRangeInput(
                              inputId = "fecha",
-                             label = h4("Seleccionar rango de fechas"),
+                             label = h4("Rango de fechas"),
                              min = "2020-02-15", #ymd
                              max = Sys.Date(),
                              start = Sys.Date() - months(3),
@@ -121,7 +105,7 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                            
                            selectInput(
                              inputId = "suavizar",
-                             label = h4("Suavizar datos con la media móvil"),
+                             label = h4("Suavizar datos usando media móvil"),
                              #grid = F,
                              #force_edges = TRUE,
                              width= "100%",
@@ -381,17 +365,17 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                fluidRow(
                  column(12, align = "center",
                         hr(),
-                        em("Plataforma desarrollada por Data UC usando R y Shiny"), 
-                        br(),
+                        #em("Plataforma desarrollada por Data UC usando R y Shiny"), 
+                        #br(),
                         a(href = "https://www.mat.uc.cl", target = "blank", 
                           "Facultad de Matemáticas - Pontificia Universidad Católica de Chile"),
-                        HTML("<p>Desarrollo: 
-                    <a href='https://www.mat.uc.cl'>
-                     Sebastián Massa Slimming y Bastián Olea Herrera</a></p>"),
-                    HTML("<p>Diseño y metodología: 
-                    <a href='https://www.mat.uc.cl'>
-                    Alejandro Jara Vallejos, Alexis Alvear Leyton y Mauricio Castro Cepero</a></p>"),
-                    
+                    #     HTML("<p>Desarrollo: 
+                    # <a href='https://www.mat.uc.cl'>
+                    #  Sebastián Massa Slimming y Bastián Olea Herrera</a></p>"),
+                    # HTML("<p>Diseño y metodología: 
+                    # <a href='https://www.mat.uc.cl'>
+                    # Alejandro Jara Vallejos, Alexis Alvear Leyton y Mauricio Castro Cepero</a></p>"),
+                    br(), br(),
                     tags$a(img(
                       src = "logodatauc.png" ,
                       width = 200, style = "padding: 8px"
@@ -403,6 +387,5 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                ) %>% 
                  #animación footer
                  aos::aos(animation = "zoom-in", duration = "1000", delay = "300"),
-               
 )
 )
