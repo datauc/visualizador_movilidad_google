@@ -637,3 +637,18 @@ Error in open.connection(con, "rb") :
   server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
 Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
 Execution halted
+Importar datos covid, ejecutando el 2021-07-27 14:03:01
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 15:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 16:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted

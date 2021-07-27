@@ -3,6 +3,8 @@
 library(shiny)
 library(shinybulma)
 library(lubridate)
+library(ggiraph)
+library(plotly)
 
 shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                   
@@ -233,21 +235,29 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                  column(12,
                         h3("Movilidad a nivel nacional"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                        plotOutput("d_pais", height = alturas_graficos) %>% 
+                        # plotOutput("d_pais", height = alturas_graficos) %>% 
+                        #   shinycssloaders::withSpinner(hide.ui = F),
+                        girafeOutput("d_pais2", height = alturas_graficos) %>% 
                           shinycssloaders::withSpinner(hide.ui = F),
+                        # plotlyOutput("d_pais3", height = alturas_graficos) %>% 
+                        #   shinycssloaders::withSpinner(hide.ui = F),
                         br(),
                         
                         h3("Movilidad a nivel regional"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("region_seleccionada")),
-                        plotOutput("d_region", height = alturas_graficos) %>% 
+                        # plotOutput("d_region", height = alturas_graficos) %>% 
+                        #   shinycssloaders::withSpinner(hide.ui = F),
+                        girafeOutput("d_region2", height = alturas_graficos) %>% 
                           shinycssloaders::withSpinner(hide.ui = F),
                         br(),
                         
                         h3("Movilidad a nivel provincial"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("provincia_seleccionada")),
-                        plotOutput("d_provincia", height = alturas_graficos) %>% 
+                        # plotOutput("d_provincia", height = alturas_graficos) %>% 
+                        #   shinycssloaders::withSpinner(hide.ui = F),
+                        girafeOutput("d_provincia2", height = alturas_graficos) %>% 
                           shinycssloaders::withSpinner(hide.ui = F)
                  )
                ),

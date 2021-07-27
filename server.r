@@ -2,6 +2,8 @@ library(shiny)
 library(shinybulma)
 library(formattable)
 library(cowplot)
+library(ggiraph)
+library(plotly)
 
 options(shiny.sanitize.errors = FALSE)
 
@@ -413,8 +415,14 @@ shinyServer(function(input, output, session) {
   #pais ----
   d_pais_movilidad <- reactive({
     p <- pais() %>% 
+      filter(fecha >= input$fecha[1], fecha <= input$fecha[2]) %>% 
       ggplot() +
       g_base_2 +
+      #tooltip
+      geom_point_interactive(aes(fecha, valor+100, col = sector,
+                                 tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                                 "Movilidad:", valor, "\n", 
+                                                 sector)), size = 3, alpha = 0.01) +
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
     
     #eje fechas
@@ -444,8 +452,14 @@ shinyServer(function(input, output, session) {
   #cuarentenas
   d_pais_cuarentena <- reactive({
     p <- cuarentenas_pais %>% 
+      filter(fecha >= input$fecha[1], fecha <= input$fecha[2]) %>% 
       ggplot() +
-      geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      #tooltip
+      geom_col_interactive(aes(fecha, (porcentaje*100), fill=etapa,
+                   tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                   "Etapa:", etapa, "\n", 
+                                   paste0(round(porcentaje*100, 1), "% de la población")
+                                   )), width = 1, alpha = 0.4) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -454,13 +468,7 @@ shinyServer(function(input, output, session) {
       g_ejes_cuarentenas +
       g_ajustes_cuarentenas +
       guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
-    
-    # #eje fechas
-    # if (rango_fecha() > cambio_eje_fecha) {
-    #   p <- p + g_eje_mensual
-    # } else {
-    #   p <- p + g_eje_semanal
-    # }
+
       
       #escala responsiva para celulares
       if (input$dimension[1] < 640) {
@@ -477,12 +485,39 @@ shinyServer(function(input, output, session) {
               rel_heights = opciones_cowplot)
   }, res = 90)
   
+  #ggiraph interactivo
+  output$d_pais2 <- renderGirafe({
+    p <- plot_grid(d_pais_movilidad(), d_pais_cuarentena(),
+                   ncol = 1, align = "v", 
+                   rel_heights = opciones_cowplot)
+    
+    girafe(ggobj = p,
+           pointsize = 18,
+           width_svg = 7.5, height_svg = 5,
+           fonts = list(sans = "Open Sans"),
+           options = list(
+             #opts_hover(css = "opacity:0.1"), 
+             opts_tooltip(#use_fill = TRUE,
+                          css = "opacity: 0.7; padding:5px; 
+                          border-radius:2px; border: white 1px solid; 
+                          background-color: #0176DE; color: white;
+                          font-family: Open Sans;"),
+             opts_toolbar(position = "topright", saveaspng = FALSE)))
+  })
+  
+
   
   #region ----
   d_region_movilidad <- reactive({
     p <- region() %>% 
+      filter(fecha >= input$fecha[1], fecha <= input$fecha[2]) %>% 
       ggplot() +
       g_base_2 +
+      #tooltip
+      geom_point_interactive(aes(fecha, valor+100, col = sector,
+                                 tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                                 "Movilidad:", valor, "\n", 
+                                                 sector)), size = 3, alpha = 0.01) +
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
     
     #eje fechas
@@ -512,8 +547,15 @@ shinyServer(function(input, output, session) {
   #cuarentenas
   d_region_cuarentena <- reactive({
     p <- cuarentenas_region_f() %>% 
+      filter(fecha >= input$fecha[1], fecha <= input$fecha[2]) %>% 
       ggplot() +
-      geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      #geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      #tooltip
+      geom_col_interactive(aes(fecha, (porcentaje*100), fill=etapa,
+                               tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                               "Etapa:", etapa, "\n", 
+                                               paste0(round(porcentaje*100, 1), "% de la población")
+                               )), width = 1, alpha = 0.4) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -538,14 +580,38 @@ shinyServer(function(input, output, session) {
               rel_heights = opciones_cowplot)
   }, res = 90)
   
+  #ggiraph
+  output$d_region2 <- renderGirafe({
+    p <- plot_grid(d_region_movilidad(), d_region_cuarentena(),
+              ncol = 1, align = "v", 
+              rel_heights = opciones_cowplot)
   
+  girafe(ggobj = p,
+         pointsize = 18,
+         width_svg = 7.5, height_svg = 5,
+         fonts = list(sans = "Open Sans"),
+         options = list(
+           #opts_hover(css = "opacity:0.1"), 
+           opts_tooltip(#use_fill = TRUE,
+             css = "opacity: 0.7; padding:5px; 
+                          border-radius:2px; border: white 1px solid; 
+                          background-color: #0176DE; color: white;
+                          font-family: Open Sans;"),
+           opts_toolbar(position = "topright", saveaspng = FALSE)))
+  })
   
   
   #provincia ----
   d_provincia_movilidad <- reactive({
     p <- provincia() %>% 
+      filter(fecha >= input$fecha[1], fecha <= input$fecha[2]) %>% 
       ggplot() +
       g_base_2 +
+      #tooltip
+      geom_point_interactive(aes(fecha, valor+100, col = sector,
+                                 tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                                 "Movilidad:", valor, "\n", 
+                                                 sector)), size = 3, alpha = 0.01) +
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
     
     #eje fechas
@@ -575,8 +641,15 @@ shinyServer(function(input, output, session) {
   #cuarentenas
   d_provincia_cuarentena <- reactive({
     p <- cuarentenas_provincia_f() %>% 
+      filter(fecha >= input$fecha[1], fecha <= input$fecha[2]) %>% 
       ggplot() +
-      geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      #geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      #tooltip
+      geom_col_interactive(aes(fecha, (porcentaje*100), fill=etapa,
+                               tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                               "Etapa:", etapa, "\n", 
+                                               paste0(round(porcentaje*100, 1), "% de la población")
+                               )), width = 1, alpha = 0.4) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -601,6 +674,25 @@ shinyServer(function(input, output, session) {
               rel_heights = opciones_cowplot)
   }, res = 90)
   
+  #ggiraph
+  output$d_provincia2 <- renderGirafe({
+    p <- plot_grid(d_provincia_movilidad(), d_provincia_cuarentena(),
+              ncol = 1, align = "v", 
+              rel_heights = opciones_cowplot)
+  
+  girafe(ggobj = p,
+         pointsize = 18,
+         width_svg = 7.5, height_svg = 5,
+         fonts = list(sans = "Open Sans"),
+         options = list(
+           #opts_hover(css = "opacity:0.1"), 
+           opts_tooltip(#use_fill = TRUE,
+             css = "opacity: 0.7; padding:5px; 
+                          border-radius:2px; border: white 1px solid; 
+                          background-color: #0176DE; color: white;
+                          font-family: Open Sans;"),
+           opts_toolbar(position = "topright", saveaspng = FALSE)))
+  })
   #—----
   
   # #datitos 
@@ -970,7 +1062,7 @@ shinyServer(function(input, output, session) {
     shinyWidgets::sendSweetAlert(
       session = session,
       title = NULL,
-      btn_colors = gris_oscuro,
+      btn_colors = celeste,
       btn_labels = "Volver",
       closeOnClickOutside = TRUE,
       showCloseButton = TRUE,
