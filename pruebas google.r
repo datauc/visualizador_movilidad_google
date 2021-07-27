@@ -765,3 +765,81 @@ cuarentenas_provincia %>%
   mutate(total = sum(porcentaje)) %>% 
   print(n=50)
 
+#—----
+
+#uno arriba del otro ----
+
+### pais()
+p_lineas <- movilidad %>% 
+  filter(is.na(region)) %>% 
+  mutate(unidad = "País") %>% 
+  filter(sector %in% c("Lugares de trabajo")) %>% #filtrar sectores
+  mutate(valor = media_movil(valor, "No")) %>% 
+  filter(fecha >= "2021-01-01") %>% 
+  ###
+  ggplot() +
+  #cuarentenas
+  #geom_col(data = cuarentenas_pais %>% group_by(fecha) %>% 
+  #           mutate(porcentaje = poblacion/sum(poblacion),
+  #                  total = sum(poblacion)), aes(fecha, (porcentaje*100)+25, fill=etapa), 
+  #         width = 1, alpha = 0.4) +
+  g_base_2 +
+  #limites horizontales
+  #coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
+  coord_cartesian(ylim = c(0, 200), expand = 0) +
+  ###
+  #escalas y tema
+  g_escalas +
+  g_temas +
+  #eje normal
+  g_primer_eje_2 +
+  ###
+  #linea de covid
+  geom_line(data = covid_pais %>% 
+              filter(fecha >= "2021-01-01"), #covid_pais(), 
+            aes(fecha, scales::rescale(casos, to=c(10, 190))), 
+            size = 0.6, alpha=0.6) +
+  #linetype = "dashed", lineend="round") +
+  #g_segundo_eje
+  scale_y_continuous(labels = function (x) paste0(x-100, "%"), 
+                     breaks = c(-75, -50, -25, 0, 25, 50, 75)+100,
+                     #eje y secundario
+                     #sec.axis = sec_axis(~., #breaks = 0, 
+                     #sec.axis = sec_axis(~covid_pais()$casos,
+                     sec.axis = sec_axis(~ scales::rescale(., to=c(0, max(covid_pais$casos))), #from=c(0, max(.))),
+                                         breaks = scales::breaks_extended(6), #breaks covid
+                                         #labels = function (x) ifelse(x<0, "", x), #eliminar negativos
+                                         name = "Casos activos de Covid-19"
+                     )) +
+  theme(legend.box.margin = margin(b=-20)) +
+  labs(y = "Movilidad")
+
+p_lineas
+
+p_cuar <- cuarentenas_pais %>% group_by(fecha) %>%
+  mutate(porcentaje = poblacion/sum(poblacion),
+         total = sum(poblacion)) %>% 
+  filter(fecha >= "2021-01-01") %>% 
+  ggplot() +
+geom_col(aes(fecha, (porcentaje*100), fill=etapa),
+        width = 1, alpha = 0.4) +
+  #g_base_2 +
+  #limites horizontales
+  #coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
+  coord_cartesian(ylim = c(0, 100), expand = 0) +
+  ###
+  #escalas y tema
+  g_escalas +
+  g_temas +
+  scale_y_continuous(labels = function (x) paste0(x, "%")) +
+  scale_x_date(date_breaks = "months", date_labels = "%b", 
+               expand = expansion(mult = c(0,0))) +
+  guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1)) +
+  labs(y = "% población en cuarentena")
+
+p_cuar
+
+library(cowplot)
+
+plot_grid(p_lineas + theme(legend.position = "top"), p_cuar,
+          ncol = 1, align = "v", rel_heights = c(2, 1))
