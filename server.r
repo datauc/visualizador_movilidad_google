@@ -1,12 +1,13 @@
 library(shiny)
 library(shinybulma)
 library(formattable)
+library(cowplot)
 
 options(shiny.sanitize.errors = FALSE)
 
 shinyServer(function(input, output, session) {
   
-  # #filtrar comunas ----
+  # #filtrar comunas
   # observeEvent(input$region, {
   #   req(input$region != "")
   #   
@@ -23,7 +24,7 @@ shinyServer(function(input, output, session) {
   #   )
   # }) 
   # 
-  # #obtener provincia de la comuna ----
+  # #obtener provincia de la comuna
   # provincia <- reactive({#reactive({
   #   req(input$provincia != "")
   #   d <- provincias_comunas %>% 
@@ -59,6 +60,9 @@ shinyServer(function(input, output, session) {
   output$region_seleccionada2 <- renderText({ input$region })
   output$provincia_seleccionada2 <- renderText({ input$provincia })
   
+  # fecha ----
+  rango_fecha <- reactive({ as.numeric(input$fecha[2] - input$fecha[1]) })
+  cambio_eje_fecha <- 62
   
   # #cuarentenas
   # #importar cuarentenas desde el repositorio del ministerio de ciencias
@@ -77,7 +81,6 @@ shinyServer(function(input, output, session) {
   #     left_join(provincias_comunas %>% select(region, provincia, comuna, codigo_comuna), by = "codigo_comuna")
   # })
   
-  #—----
   
   #procesamiento ----
   
@@ -158,7 +161,7 @@ shinyServer(function(input, output, session) {
     
     #—----
   
-    #g pais ----
+    #pais ----
     output$grafico_pais <- renderPlot({
     p <- pais() %>% 
       ggplot()
@@ -211,7 +214,7 @@ shinyServer(function(input, output, session) {
   
   
   
-  #g region ----
+  #region ----
   output$grafico_region <- renderPlot({
     p <- region() %>% 
       ggplot()
@@ -263,7 +266,7 @@ shinyServer(function(input, output, session) {
   
   
   
-  #g provincia ----
+  #provincia ----
   output$grafico_provincia <- renderPlot({
     p <- provincia() %>% 
       ggplot()
@@ -320,7 +323,7 @@ shinyServer(function(input, output, session) {
   
   load("datos/cuarentenas_diarias.rdata")
   
-  #por provincia ----
+  #provincia ----
   cuarentenas_provincia <- cuarentenas %>% 
     select(fecha, etapa, comuna, provincia, region) %>% 
     #limpiar comunas, anexar población
@@ -349,7 +352,7 @@ shinyServer(function(input, output, session) {
     g_cuarentenas_tema
   }, res = 90)
   
-  #por región ----
+  #región ----
   cuarentenas_region <- cuarentenas %>% 
     select(fecha, etapa, comuna, provincia, region) %>% 
     #limpiar comunas, anexar población
@@ -406,7 +409,201 @@ shinyServer(function(input, output, session) {
   
   #—----
   
-  # #datitos ----
+  #dobles ----
+  #pais ----
+  d_pais_movilidad <- reactive({
+    p <- pais() %>% 
+      ggplot() +
+      g_base_2 +
+      coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
+    
+    #eje fechas
+    if (rango_fecha() > cambio_eje_fecha) {
+      p <- p + g_eje_mensual
+    } else {
+      p <- p + g_eje_semanal
+    }
+    
+    #eje y doble o normal
+    if (!is.null(input$covid)) {
+      p <- p +
+        #linea de covid
+        geom_line(data = covid_pais(), aes(fecha, scales::rescale(casos, to=c(10, 190))), size = 0.6, alpha=0.6) +
+        scale_y_continuous(labels = function (x) paste0(x-100, "%"), breaks = c(-75, -50, -25, 0, 25, 50, 75)+100,
+                           #eje y secundario
+                           sec.axis = sec_axis(~ scales::rescale(., to=c(min(covid_pais()$casos), max(covid_pais()$casos))), breaks = scales::breaks_extended(6), name = "Casos activos de Covid-19"
+                           ))
+    } else {
+      p <- p + g_primer_eje_2
+    }
+    
+    #escalas y tema
+    p <- p + g_escalas + g_temas + g_leyenda
+  })
+  
+  #cuarentenas
+  d_pais_cuarentena <- reactive({
+    p <- cuarentenas_pais %>% 
+      ggplot() +
+      geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      coord_cartesian(ylim = c(0, 100), expand = 0,
+                      xlim = c(input$fecha[1], input$fecha[2])) +
+      #escalas y tema
+      g_escalas +
+      g_temas +
+      g_ejes_cuarentenas +
+      g_ajustes_cuarentenas +
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
+    
+    # #eje fechas
+    # if (rango_fecha() > cambio_eje_fecha) {
+    #   p <- p + g_eje_mensual
+    # } else {
+    #   p <- p + g_eje_semanal
+    # }
+      
+      #escala responsiva para celulares
+      if (input$dimension[1] < 640) {
+        p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2))
+      } else {
+        p <- p
+      }
+  })
+  
+  #graficos combinados
+  output$d_pais <- renderPlot({
+    plot_grid(d_pais_movilidad(), d_pais_cuarentena(),
+              ncol = 1, align = "v", 
+              rel_heights = opciones_cowplot)
+  }, res = 90)
+  
+  
+  #region ----
+  d_region_movilidad <- reactive({
+    p <- region() %>% 
+      ggplot() +
+      g_base_2 +
+      coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
+    
+    #eje fechas
+    if (rango_fecha() > cambio_eje_fecha) {
+      p <- p + g_eje_mensual
+    } else {
+      p <- p + g_eje_semanal
+    }
+    
+    #eje y doble o normal
+    if (!is.null(input$covid)) {
+      p <- p +
+        #linea de covid
+        geom_line(data = covid_region(), aes(fecha, scales::rescale(casos, to=c(10, 190))), size = 0.6, alpha=0.6) +
+        scale_y_continuous(labels = function (x) paste0(x-100, "%"), breaks = c(-75, -50, -25, 0, 25, 50, 75)+100,
+                           #eje y secundario
+                           sec.axis = sec_axis(~ scales::rescale(., to=c(min(covid_region()$casos), max(covid_region()$casos))), breaks = scales::breaks_extended(6), name = "Casos activos de Covid-19"
+                           ))
+    } else {
+      p <- p + g_primer_eje_2
+    }
+    
+    #escalas y tema
+    p <- p + g_escalas + g_temas + g_leyenda
+  })
+  
+  #cuarentenas
+  d_region_cuarentena <- reactive({
+    p <- cuarentenas_region_f() %>% 
+      ggplot() +
+      geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      coord_cartesian(ylim = c(0, 100), expand = 0,
+                      xlim = c(input$fecha[1], input$fecha[2])) +
+      #escalas y tema
+      g_escalas +
+      g_temas +
+      g_ejes_cuarentenas +
+      g_ajustes_cuarentenas +
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
+    
+    #escala responsiva para celulares
+    if (input$dimension[1] < 640) {
+      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2))
+    } else {
+      p <- p
+    }
+  })
+  
+  #graficos combinados
+  output$d_region <- renderPlot({
+    plot_grid(d_region_movilidad(), d_region_cuarentena(),
+              ncol = 1, align = "v", 
+              rel_heights = opciones_cowplot)
+  }, res = 90)
+  
+  
+  
+  
+  #provincia ----
+  d_provincia_movilidad <- reactive({
+    p <- provincia() %>% 
+      ggplot() +
+      g_base_2 +
+      coord_cartesian(xlim = c(input$fecha[1], input$fecha[2]))
+    
+    #eje fechas
+    if (rango_fecha() > cambio_eje_fecha) {
+      p <- p + g_eje_mensual
+    } else {
+      p <- p + g_eje_semanal
+    }
+    
+    #eje y doble o normal
+    if (!is.null(input$covid)) {
+      p <- p +
+        #linea de covid
+        geom_line(data = covid_provincia(), aes(fecha, scales::rescale(casos, to=c(10, 190))), size = 0.6, alpha=0.6) +
+        scale_y_continuous(labels = function (x) paste0(x-100, "%"), breaks = c(-75, -50, -25, 0, 25, 50, 75)+100,
+                           #eje y secundario
+                           sec.axis = sec_axis(~ scales::rescale(., to=c(min(covid_provincia()$casos), max(covid_provincia()$casos))), breaks = scales::breaks_extended(6), name = "Casos activos de Covid-19"
+                           ))
+    } else {
+      p <- p + g_primer_eje_2
+    }
+    
+    #escalas y tema
+    p <- p + g_escalas + g_temas + g_leyenda
+  })
+  
+  #cuarentenas
+  d_provincia_cuarentena <- reactive({
+    p <- cuarentenas_provincia_f() %>% 
+      ggplot() +
+      geom_col(aes(fecha, (porcentaje*100), fill=etapa), width = 1, alpha = 0.4) +
+      coord_cartesian(ylim = c(0, 100), expand = 0,
+                      xlim = c(input$fecha[1], input$fecha[2])) +
+      #escalas y tema
+      g_escalas +
+      g_temas +
+      g_ejes_cuarentenas +
+      g_ajustes_cuarentenas +
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
+    
+    #escala responsiva para celulares
+    if (input$dimension[1] < 640) {
+      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2))
+    } else {
+      p <- p
+    }
+  })
+  
+  #graficos combinados
+  output$d_provincia <- renderPlot({
+    plot_grid(d_provincia_movilidad(), d_provincia_cuarentena(),
+              ncol = 1, align = "v", 
+              rel_heights = opciones_cowplot)
+  }, res = 90)
+  
+  #—----
+  
+  # #datitos 
   # output$dato_mayor_aumento <- renderUI({
   #   dato <- movilidad %>% 
   #     movilidad_cambios() %>% 
@@ -665,7 +862,7 @@ shinyServer(function(input, output, session) {
   
   
   
-  #tabla ----
+  #tabla
   
 #   #provincias mayor movilidad
 #   output$tabla_mayor_movilidad <- formattable::renderFormattable({

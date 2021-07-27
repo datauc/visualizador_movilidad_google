@@ -90,9 +90,9 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                              inputId = "fecha",
                              label = h4("Rango de fechas"),
                              min = "2020-02-15", #ymd
-                             max = Sys.Date(),
+                             max = max(movilidad$fecha, na.rm = T),#Sys.Date(),
                              start = Sys.Date() - months(3),
-                             end = Sys.Date(),
+                             end = max(movilidad$fecha, na.rm = T),##Sys.Date(),
                              format = "dd-mm-yyyy",
                              startview = "month",
                              weekstart = 0,
@@ -131,14 +131,14 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                              justified = TRUE
                            ),
                            
-                           br(),
+                           #br(),
                            
-                           shinyWidgets::checkboxGroupButtons(
-                             inputId = "fondo",
-                             label= NULL,
-                             choices = c("Mostrar etapas de cuarentena"),
-                             justified = TRUE
-                           ),
+                           # shinyWidgets::checkboxGroupButtons(
+                           #   inputId = "fondo",
+                           #   label= NULL,
+                           #   choices = c("Mostrar etapas de cuarentena"),
+                           #   justified = TRUE
+                           # ),
                            
                            
                            column(12, align="right",
@@ -156,14 +156,14 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                     
                     #body ----
                     column(8,
-                           tabsetPanel(id = "tabs", type="pills",
+                           #tabsetPanel(id = "tabs", type="pills",
                                        #MOVILIDAD ----
-                                       tabPanel(title=HTML("&nbsp;&nbsp;&nbsp;&nbsp;Movilidad&nbsp;&nbsp;&nbsp;&nbsp;"), 
+                                       #tabPanel(title=HTML("&nbsp;&nbsp;&nbsp;&nbsp;Movilidad&nbsp;&nbsp;&nbsp;&nbsp;"), 
                                                 
                                                 fluidRow(
                                                   column(12,
-                                                         h2(icon("chart-line"), "Resultados principales") %>% 
-                                                           aos::aos(animation = "zoom-in", duration = "600"), 
+                                                         h2(icon("chart-line"), "Resultados principales"), #%>% 
+                                                           #aos::aos(animation = "zoom-in", duration = "600"), 
                                                          
                                                          br(),
                                                          
@@ -175,8 +175,8 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                Para mayor información y datos sobre metodología, acceda al
                     <a href='https://www.google.com/covid19/mobility/'>
                     sitio web del Google Mobility Report</a></p>"),
-                                                         ) %>% 
-                 aos::aos(animation = "zoom-in", duration = "600")
+                                                         ) #%>% 
+                 #aos::aos(animation = "zoom-in", duration = "600")
                                                   )
                                                 ),
                
@@ -233,21 +233,21 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                  column(12,
                         h3("Movilidad a nivel nacional"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                        plotOutput("grafico_pais", height = "350px") %>% 
+                        plotOutput("d_pais", height = alturas_graficos) %>% 
                           shinycssloaders::withSpinner(hide.ui = F),
                         br(),
                         
                         h3("Movilidad a nivel regional"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("region_seleccionada")),
-                        plotOutput("grafico_region", height = "350px") %>% 
+                        plotOutput("d_region", height = alturas_graficos) %>% 
                           shinycssloaders::withSpinner(hide.ui = F),
                         br(),
                         
                         h3("Movilidad a nivel provincial"), #%>% 
                           #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
                         h5(textOutput("provincia_seleccionada")),
-                        plotOutput("grafico_provincia", height = "350px") %>% 
+                        plotOutput("d_provincia", height = alturas_graficos) %>% 
                           shinycssloaders::withSpinner(hide.ui = F)
                  )
                ),
@@ -277,46 +277,46 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         #hr(),
                  )
                )
-                                       ), #fin tab movilidad
-               
-               #CUARENTENAS ----
-               tabPanel(title=HTML("&nbsp;&nbsp;&nbsp;&nbsp;Cuarentenas&nbsp;&nbsp;&nbsp;&nbsp;"),
-                        
-                        fluidRow(
-                          column(12,
-                                 h2(icon("chart-area"), "Población en cuarentenas") %>% 
-                                   aos::aos(animation = "zoom-in", duration = "600"), 
-                                 
-                                 br()
-                          )
-                        ),
-                        
-                        #grafico ----
-                        fluidRow(
-                          column(12,
-                                 h3("Población en cuarentena a nivel nacional"), #%>% 
-                                   #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                                 plotOutput("cuarentenas_pais_g") %>% 
-                                   shinycssloaders::withSpinner(hide.ui = F),
-                                 br(),
-                                 
-                                 h3("Población en cuarentena a nivel regional"), #%>% 
-                                   #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                                 h5(textOutput("region_seleccionada2")),
-                                 plotOutput("cuarentenas_region_g") %>% 
-                                   shinycssloaders::withSpinner(hide.ui = F),
-                                 br(),
-                                 
-                                 h3("Población en cuarentena a nivel provincial"), #%>% 
-                                   #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
-                                 h5(textOutput("provincia_seleccionada2")),
-                                 plotOutput("cuarentenas_provincia_g") %>% 
-                                   shinycssloaders::withSpinner(hide.ui = F)
-                          )
-                        ),
-                        
-               ) #fin tab cuarentenas
-                           )#fin tabset
+               #                         ), #fin tab movilidad
+               # 
+               # #CUARENTENAS ----
+               # tabPanel(title=HTML("&nbsp;&nbsp;&nbsp;&nbsp;Cuarentenas&nbsp;&nbsp;&nbsp;&nbsp;"),
+               #          
+               #          fluidRow(
+               #            column(12,
+               #                   h2(icon("chart-area"), "Población en cuarentenas") %>% 
+               #                     aos::aos(animation = "zoom-in", duration = "600"), 
+               #                   
+               #                   br()
+               #            )
+               #          ),
+               #          
+               #          #grafico ----
+               #          fluidRow(
+               #            column(12,
+               #                   h3("Población en cuarentena a nivel nacional"), #%>% 
+               #                     #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+               #                   plotOutput("cuarentenas_pais_g") %>% 
+               #                     shinycssloaders::withSpinner(hide.ui = F),
+               #                   br(),
+               #                   
+               #                   h3("Población en cuarentena a nivel regional"), #%>% 
+               #                     #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+               #                   h5(textOutput("region_seleccionada2")),
+               #                   plotOutput("cuarentenas_region_g") %>% 
+               #                     shinycssloaders::withSpinner(hide.ui = F),
+               #                   br(),
+               #                   
+               #                   h3("Población en cuarentena a nivel provincial"), #%>% 
+               #                     #aos::aos(animation = "zoom-in", duration = "600", once = TRUE),
+               #                   h5(textOutput("provincia_seleccionada2")),
+               #                   plotOutput("cuarentenas_provincia_g") %>% 
+               #                     shinycssloaders::withSpinner(hide.ui = F)
+               #            )
+               #          ),
+               #          
+               # ) #fin tab cuarentenas
+                           #)#fin tabset
                     )
                   ), #fin fluidrow sidebar+body
                
@@ -384,8 +384,8 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                     )
                     
                  )
-               ) %>% 
+               ) #%>% 
                  #animación footer
-                 aos::aos(animation = "zoom-in", duration = "1000", delay = "300"),
+                 #aos::aos(animation = "zoom-in", duration = "1000", delay = "300"),
 )
 )

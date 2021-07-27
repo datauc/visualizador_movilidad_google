@@ -148,8 +148,8 @@ custom_color_tile <- function (...)
 #gráfico base
 g_base <- list(
   geom_hline(yintercept = 0, size = 0.4, alpha = 0.7),
-  geom_hline(yintercept = 50, size = 0.3, alpha = 0.4, linetype = "dashed"),
-  geom_hline(yintercept = -50, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  #geom_hline(yintercept = 50, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  #geom_hline(yintercept = -50, size = 0.3, alpha = 0.4, linetype = "dashed"),
   #lineas
   geom_line(aes(fecha, valor, col = sector), size = 1, show.legend = F),
   geom_point(aes(fecha, valor, col = sector), size = 0, alpha = 0),
@@ -166,13 +166,21 @@ g_primer_eje <- list(
 #gráfico base con transformaciones para poner fondo de cuarentenas
 g_base_2 <- list(
   geom_hline(yintercept = 0+100, size = 0.4, alpha = 0.7),
-  geom_hline(yintercept = 50+100, size = 0.3, alpha = 0.4, linetype = "dashed"),
-  geom_hline(yintercept = -50+100, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  #geom_hline(yintercept = 50+100, size = 0.3, alpha = 0.4, linetype = "dashed"),
+  #geom_hline(yintercept = -50+100, size = 0.3, alpha = 0.4, linetype = "dashed"),
   #lineas
   geom_line(aes(fecha, valor+100, col = sector), size = 1, show.legend = F),
-  geom_point(aes(fecha, valor+100, col = sector), size = 0, alpha = 0),
+  geom_point(aes(fecha, valor+100, col = sector), size = 0, alpha = 0)
+)
+
+g_eje_mensual <- list(
   scale_x_date(date_breaks = "months", date_labels = "%b", 
-               expand = expansion(mult = c(0,0)))
+               expand = expansion(mult = c(0, 0)))
+)
+
+g_eje_semanal <- list(
+  scale_x_date(date_breaks = "weeks", date_labels = "%d-%b", 
+               expand = expansion(mult = c(0, 0)))
 )
 
 #eje normal con transformaciones
@@ -185,7 +193,18 @@ g_escalas <- list(
   scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red"))),
   scale_color_manual(values = c("#dc0073", "#008bf8", "#ff4e00",
                                 "#6a4c93", "#04e762", "#f5b700")),
-                     labs(y = "Cambio porcentual respecto a línea de base")
+                     labs(y = "% movilidad")
+)
+
+g_ejes_cuarentenas <- list(
+  scale_y_continuous(labels = function (x) paste0(x, "%"),
+                     breaks = c(0, 50, 100)),
+    labs(y = "% pob. en cuarentena")
+)
+
+g_leyenda <- list(
+  theme(legend.position = "top",
+        legend.box.margin = margin(b=-20))
 )
 
 g_temas <- list(
@@ -198,7 +217,7 @@ g_temas <- list(
   theme(text = element_text(family = "Open Sans", color = gris_oscuro),
         plot.subtitle = element_text(family = "Oswald", size = 14),
         plot.title = element_text(family = "Oswald"),
-        axis.title.y = element_text(family = "Open Sans", size = 10),
+        axis.title.y = element_text(family = "Open Sans", face = "italic", size = 10),
         axis.text.y = element_text(family = "Oswald")),
   guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2)),
   guides(col = guide_legend(override.aes = list(size = 5, alpha=1, fill=NA, text=NA), nrow = 2))
@@ -229,3 +248,15 @@ g_cuarentenas_tema <- list(
     guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.6), nrow = 2)),
     guides(col = guide_legend(override.aes = list(size = 5, alpha=0.6, fill=NA, text=NA), nrow = 2))
 )
+
+
+g_ajustes_cuarentenas <- list(
+theme(legend.text = element_text(margin = margin(r = 10))), #separar textos leyenda
+theme(axis.text.x = element_blank()), #sin fecha
+theme(panel.grid = element_blank())
+)
+
+
+opciones_cowplot <- c(2, 1)
+alturas_graficos <- "450px"
+
