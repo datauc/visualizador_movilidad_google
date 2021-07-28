@@ -459,7 +459,7 @@ shinyServer(function(input, output, session) {
                    tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
                                    "Etapa:", etapa, "\n", 
                                    paste0(round(porcentaje*100, 1), "% de la población")
-                                   )), width = 1, alpha = 0.4) +
+                                   )), width = 1, alpha = 1) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -467,12 +467,12 @@ shinyServer(function(input, output, session) {
       g_temas +
       g_ejes_cuarentenas +
       g_ajustes_cuarentenas +
-      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 1))
 
       
       #escala responsiva para celulares
       if (input$dimension[1] < 640) {
-        p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2))
+        p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 2))
       } else {
         p <- p
       }
@@ -555,7 +555,7 @@ shinyServer(function(input, output, session) {
                                tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
                                                "Etapa:", etapa, "\n", 
                                                paste0(round(porcentaje*100, 1), "% de la población")
-                               )), width = 1, alpha = 0.4) +
+                               )), width = 1, alpha = 1) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -563,11 +563,11 @@ shinyServer(function(input, output, session) {
       g_temas +
       g_ejes_cuarentenas +
       g_ajustes_cuarentenas +
-      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 1))
     
     #escala responsiva para celulares
     if (input$dimension[1] < 640) {
-      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2))
+      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 2))
     } else {
       p <- p
     }
@@ -649,7 +649,7 @@ shinyServer(function(input, output, session) {
                                tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
                                                "Etapa:", etapa, "\n", 
                                                paste0(round(porcentaje*100, 1), "% de la población")
-                               )), width = 1, alpha = 0.4) +
+                               )), width = 1, alpha = 1) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -657,11 +657,11 @@ shinyServer(function(input, output, session) {
       g_temas +
       g_ejes_cuarentenas +
       g_ajustes_cuarentenas +
-      guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 1))
+      guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 1))
     
     #escala responsiva para celulares
     if (input$dimension[1] < 640) {
-      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha=0.4), nrow = 2))
+      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 2))
     } else {
       p <- p
     }

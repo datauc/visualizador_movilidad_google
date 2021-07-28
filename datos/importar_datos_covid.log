@@ -652,3 +652,91 @@ Error in open.connection(con, "rb") :
   server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
 Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
 Execution halted
+Importar datos covid, ejecutando el 2021-07-27 17:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 18:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 19:03:01
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 20:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 21:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 22:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-27 23:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-28 00:03:02
+Error in open.connection(con, "rb") : 
+  server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+Calls: %>% ... datasource_connection -> read_connection -> open -> open.connection
+Execution halted
+Importar datos covid, ejecutando el 2021-07-28 01:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 02:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 03:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 04:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 05:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 06:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 07:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 08:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 09:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 10:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 11:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-24
+Importar datos covid, ejecutando el 2021-07-28 12:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-28
+Importar datos covid, ejecutando el 2021-07-28 13:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-28
+Importar datos covid, ejecutando el 2021-07-28 14:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-28
+Importar datos covid, ejecutando el 2021-07-28 15:03:02
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-28
+Importar datos covid, ejecutando el 2021-07-28 16:03:01
+Fecha max activos 2021-07-23
+Fecha max cuarentenas 2021-07-28

@@ -48,9 +48,9 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                                     style = "padding: 15px; margin-top: -14px")
                            ),
                            column(10,
-                                h1("Visualizador de movilidad Google",
+                                h1("Visualizador de movilidad",
                                    style = "padding:10px; margin-left: 20px;  color: white;"),
-                             p("Desarrollado por Data UC, Universidad Católica de Chile",
+                             p("Datos de Google y situación de cuarentenas",
                                style = "padding:10px; margin-left: 20px; margin-top: -20px; color: white; font-family: Roboto; font-style: italic;")
                            )
                     ),
@@ -164,19 +164,24 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                                                 
                                                 fluidRow(
                                                   column(12,
-                                                         h2(icon("chart-line"), "Resultados principales"), #%>% 
+                                                         #h2(icon("chart-line"), "Resultados principales"), #%>% 
                                                            #aos::aos(animation = "zoom-in", duration = "600"), 
                                                          
                                                          br(),
                                                          
                                                          div(
-                                                           HTML("Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google. Utilice los botones presentados a continuación para seleccionar las variables que le interesa graficar."),
-                                                           
-                                                           HTML("<p>Los datos son obtenidos y procesados desde 
-                    el sitio <em>Google Mobility Report</em>. 
-               Para mayor información y datos sobre metodología, acceda al
-                    <a href='https://www.google.com/covid19/mobility/'>
-                    sitio web del Google Mobility Report</a></p>"),
+                                                           HTML("<p>Esta herramienta permite visualizar los datos del <em>COVID-19 Community Mobility Report</em> desarrollado por Google, además de la información de etapas de cuarentenas proporcionada por el Ministerio de Salud y el Ministerio de Ciencia, Tecnología, Conocimiento e Innovación. 
+                                                                Utilice los botones para seleccionar las variables que le interesa graficar.</p>"),
+                                                           #br(),
+                                                           HTML("<p>Los datos son obtenidos y procesados desde el 
+                                                                <a href='https://www.google.com/covid19/mobility/'>
+                                                                <em>Google Mobility Report</em>.
+                                                                  </a>
+                                                                y el 
+                                                                <a href='https://github.com/MinCiencia/Datos-COVID19'>
+                                                                repositorio de datos del Ministerio de Ciencias.
+                                                                  </a>
+                                                                </p>"),
                                                          ) #%>% 
                  #aos::aos(animation = "zoom-in", duration = "600")
                                                   )
@@ -379,20 +384,22 @@ shinyUI(fluidPage(title = "Visualizador de movilidad de Google", lang = "es",
                         #br(),
                         a(href = "https://www.mat.uc.cl", target = "blank", 
                           "Facultad de Matemáticas - Pontificia Universidad Católica de Chile"),
-                    #     HTML("<p>Desarrollo: 
+                        br(),
+                        p("Sebastián Massa Slimming, Bastián Olea Herrera, Alejandro Jara Vallejos, Alexis Alvear Leyton y Mauricio Castro Cepero"),
+                    #     HTML("<p>Desarrollo:
                     # <a href='https://www.mat.uc.cl'>
                     #  Sebastián Massa Slimming y Bastián Olea Herrera</a></p>"),
-                    # HTML("<p>Diseño y metodología: 
+                    # HTML("<p>Diseño y metodología:
                     # <a href='https://www.mat.uc.cl'>
                     # Alejandro Jara Vallejos, Alexis Alvear Leyton y Mauricio Castro Cepero</a></p>"),
-                    br(), br(),
+                    #br(), #br(),
                     tags$a(img(
-                      src = "logodatauc.png" ,
+                      src = "logo-uc-04.svg" ,
                       width = 200, style = "padding: 8px"
                     ),
                     href = "https://www.mat.uc.cl"
-                    )
-                    
+                    ),
+                    br()
                  )
                ) #%>% 
                  #animación footer

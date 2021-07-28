@@ -19,6 +19,34 @@ celeste <- "#0176DE"
 azul <- "#173F8A"
 azul_oscuro <- "#03122E"
 
+#colores originales
+colores1 <- c("#dc0073", "#008bf8", "#ff4e00",
+              "#6a4c93", "#04e762", "#f5b700")
+
+#colores material 600
+colores2 <- c(#"#e53935",
+              "#d81b60",
+              "#8e24aa",
+              "#3949ab",
+              #"#1e88e5",
+              "#039be5",
+              #"#43a047",
+              "#00897b",
+              "#7cb342")
+              #"#fb8c00")
+scales::show_col(colores2)
+
+semaforo <- c("#ef5350",
+              #"#ff7043",
+              "#ffa726",
+              #"#ff8a65",
+              #"#ffca28",
+              #"#ffee58",
+              "#ffeb3b",
+              "#9ccc65")
+scales::show_col(semaforo)
+
+
 #selectores----
 #provincias_comunas$region %>% unique()  %>% sort() %>% dput()
 regiones <- c("Metropolitana de Santiago", "Antofagasta", "Arica y Parinacota", "Atacama", "Aysén del Gral. C. Ibáñez del Campo", 
@@ -190,9 +218,8 @@ g_primer_eje_2 <- list(
 )
 
 g_escalas <- list(
-  scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red"))),
-  scale_color_manual(values = c("#dc0073", "#008bf8", "#ff4e00",
-                                "#6a4c93", "#04e762", "#f5b700")),
+  scale_fill_manual(values = semaforo),
+  scale_color_manual(values = colores2),
                      labs(y = "% movilidad")
 )
 
@@ -232,7 +259,7 @@ g_cuarentenas <- list(
     geom_point(aes(fecha, porcentaje, col = etapa), size = 0, alpha = 0),
     scale_x_date(date_breaks = "months", date_labels = "%b", 
                  expand = expansion(mult = c(0,0))),
-    scale_fill_manual(values = rev(c("lightgreen", "yellow1", "orange", "red")),
+    scale_fill_manual(values = semaforo,
                       aesthetics = c("color", "fill"))
 )
 
