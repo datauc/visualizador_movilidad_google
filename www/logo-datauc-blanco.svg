@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1200 480" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(0.794771,0,0,0.794771,33.7146,66.2766)">
+        <text x="456.967px" y="382.482px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:64px;fill:white;">Estudios y Servicios Estadísticos</text>
+    </g>
+    <g transform="matrix(2.71389,0,0,2.71389,-580.59,-590.206)">
+        <text x="347.14px" y="334.908px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:72px;fill:white;">DA<tspan x="445.723px " y="334.908px ">T</tspan>A</text>
+        <text x="546.624px" y="334.908px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:72px;fill:white;">U</text>
+        <text x="595.72px" y="334.908px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:72px;fill:white;">C</text>
+    </g>
+    <g id="Capa1">
+        <path d="M238.754,417.045L347.807,389.466L317.033,182.482L215.416,168.85C215.416,168.85 239.957,296.713 238.754,417.045Z" style="fill:white;"/>
+        <path d="M283.931,147.366L171.692,134.172C171.692,134.172 194.589,262.169 189.899,401.396L229.229,413.378C229.229,413.378 234.104,337.468 205.684,158.505L288.018,170.151L283.931,147.366Z" style="fill:white;"/>
+        <path d="M255.979,85.43L123.295,71.398C123.295,71.398 152.466,210.091 143.84,387.478L179.496,398.519C179.496,398.519 181.835,359.417 179.903,304.195C178.084,252.228 172.369,185.984 160.915,124.616L262.51,137.036L255.979,85.43Z" style="fill:white;"/>
+        <path d="M122.028,127.128L83.6,123.487C83.6,123.487 110.645,249.955 100.492,373.422L135.31,384.194C135.31,384.194 141.695,222.302 122.028,127.128Z" style="fill:white;"/>
+        <path d="M52.594,192.76L86.835,196.177C86.835,196.177 99.587,290.52 92.452,369.615L63.84,362.002C63.84,362.002 69.674,288.709 52.594,192.76Z" style="fill:white;"/>
+    </g>
+</svg>

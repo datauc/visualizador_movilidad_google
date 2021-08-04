@@ -1,7 +1,5 @@
 library(dplyr)
 library(ggplot2)
-#library(formattable)
-#library(shinybulma)
 
 Sys.setlocale(category = "LC_TIME", locale="es_ES.UTF-8") #meses en español
 
@@ -34,7 +32,7 @@ colores2 <- c(#"#e53935",
               "#00897b",
               "#7cb342")
               #"#fb8c00")
-scales::show_col(colores2)
+#scales::show_col(colores2)
 
 semaforo <- c("#ef5350",
               #"#ff7043",
@@ -44,7 +42,7 @@ semaforo <- c("#ef5350",
               #"#ffee58",
               "#ffeb3b",
               "#9ccc65")
-scales::show_col(semaforo)
+#scales::show_col(semaforo)
 
 
 #selectores----

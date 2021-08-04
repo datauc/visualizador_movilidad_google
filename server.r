@@ -1,9 +1,6 @@
 library(shiny)
-library(shinybulma)
-library(formattable)
 library(cowplot)
 library(ggiraph)
-library(plotly)
 
 options(shiny.sanitize.errors = FALSE)
 
@@ -114,7 +111,7 @@ shinyServer(function(input, output, session) {
       filter(sector %in% input$sector) %>% #filtrar sectores
       mutate(valor = media_movil(valor, input$suavizar)) #media móvil
   })
-    
+  
   # #cambios en cuarentenas
   #   cuarentenas_cambios <- reactive({
   #     req(datos2())
@@ -135,36 +132,36 @@ shinyServer(function(input, output, session) {
   #            hasta = replace(hasta, is.na(hasta), fecha_maxima))
   #   return(cuarentenas_cambios)
   #   })
-    
-    # #media movil
-    # datos3 <- reactive({
-    #   req(datos2())
-    # if (input$suavizar == "No") {
-    #   d3 <- datos2()
-    # } else if (input$suavizar != "No") {
-    #   if (input$suavizar == "1 semana") {
-    #     dias <- 7
-    #   } else if (input$suavizar == "2 semanas") {
-    #     dias <- 14
-    #   } else if (input$suavizar == "3 semanas") {
-    #     dias <- 21
-    #   } else {
-    #     dias <- readr::parse_number(input$suavizar)
-    #   }
-    #   #suavizar
-    #   d3 <- datos2() %>%
-    #     group_by(sector) %>%
-    #     mutate(valor = zoo::rollmean(valor, k = dias, 
-    #                                  fill = "extend"))
-    # }
-    #   return(d3)
-    # })
-    
-    
-    #—----
   
-    #pais ----
-    output$grafico_pais <- renderPlot({
+  # #media movil
+  # datos3 <- reactive({
+  #   req(datos2())
+  # if (input$suavizar == "No") {
+  #   d3 <- datos2()
+  # } else if (input$suavizar != "No") {
+  #   if (input$suavizar == "1 semana") {
+  #     dias <- 7
+  #   } else if (input$suavizar == "2 semanas") {
+  #     dias <- 14
+  #   } else if (input$suavizar == "3 semanas") {
+  #     dias <- 21
+  #   } else {
+  #     dias <- readr::parse_number(input$suavizar)
+  #   }
+  #   #suavizar
+  #   d3 <- datos2() %>%
+  #     group_by(sector) %>%
+  #     mutate(valor = zoo::rollmean(valor, k = dias, 
+  #                                  fill = "extend"))
+  # }
+  #   return(d3)
+  # })
+  
+  
+  #—----
+  
+  #pais ----
+  output$grafico_pais <- renderPlot({
     p <- pais() %>% 
       ggplot()
     
@@ -182,7 +179,7 @@ shinyServer(function(input, output, session) {
       #limites horizontales
       coord_cartesian(ylim = c(0, 200), expand = 0, 
                       xlim = c(input$fecha[1], input$fecha[2]))
-      
+    
     #eje y doble o normal
     if (!is.null(input$covid)) {
       p <- p +
@@ -300,7 +297,7 @@ shinyServer(function(input, output, session) {
                            breaks = c(-75, -50, -25, 0, 25, 50, 75)+100,
                            #eje y secundario
                            sec.axis = sec_axis(~scales::rescale(., to = c(min(covid_provincia()$casos), max(covid_provincia()$casos))), #from=c(0, max(.))),
-                                              breaks = scales::breaks_extended(6), #breaks covid
+                                               breaks = scales::breaks_extended(6), #breaks covid
                                                name = "Casos activos de Covid-19"
                            ))
     } else {
@@ -344,14 +341,14 @@ shinyServer(function(input, output, session) {
   })
   
   output$cuarentenas_provincia_g <- renderPlot({
-  cuarentenas_provincia %>% 
-    filter(provincia == input$provincia) %>% 
-    group_by(fecha, provincia) %>% 
-    mutate(porcentaje = poblacion/sum(poblacion)) %>% 
-    ggplot(aes(fecha, porcentaje, fill = etapa)) +
+    cuarentenas_provincia %>% 
+      filter(provincia == input$provincia) %>% 
+      group_by(fecha, provincia) %>% 
+      mutate(porcentaje = poblacion/sum(poblacion)) %>% 
+      ggplot(aes(fecha, porcentaje, fill = etapa)) +
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2])) +
-    g_cuarentenas +
-    g_cuarentenas_tema
+      g_cuarentenas +
+      g_cuarentenas_tema
   }, res = 90)
   
   #región ----
@@ -374,11 +371,11 @@ shinyServer(function(input, output, session) {
   })
   
   output$cuarentenas_region_g <- renderPlot({
-  cuarentenas_region %>% 
-    filter(region == input$region) %>% 
-    group_by(fecha, region) %>% 
-    mutate(porcentaje = poblacion/sum(poblacion)) %>% 
-    ggplot(aes(fecha, porcentaje, fill = etapa)) +
+    cuarentenas_region %>% 
+      filter(region == input$region) %>% 
+      group_by(fecha, region) %>% 
+      mutate(porcentaje = poblacion/sum(poblacion)) %>% 
+      ggplot(aes(fecha, porcentaje, fill = etapa)) +
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2])) +
       g_cuarentenas +
       g_cuarentenas_tema
@@ -398,11 +395,11 @@ shinyServer(function(input, output, session) {
     mutate(porcentaje = poblacion/sum(poblacion))
   
   output$cuarentenas_pais_g <- renderPlot({
-  cuarentenas_pais %>% 
-    group_by(fecha) %>% 
-    mutate(porcentaje = poblacion/sum(poblacion),
-           total = sum(poblacion)) %>% 
-    ggplot(aes(fecha, porcentaje, fill = etapa)) +
+    cuarentenas_pais %>% 
+      group_by(fecha) %>% 
+      mutate(porcentaje = poblacion/sum(poblacion),
+             total = sum(poblacion)) %>% 
+      ggplot(aes(fecha, porcentaje, fill = etapa)) +
       coord_cartesian(xlim = c(input$fecha[1], input$fecha[2])) +
       g_cuarentenas +
       g_cuarentenas_tema
@@ -456,10 +453,10 @@ shinyServer(function(input, output, session) {
       ggplot() +
       #tooltip
       geom_col_interactive(aes(fecha, (porcentaje*100), fill=etapa,
-                   tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
-                                   "Etapa:", etapa, "\n", 
-                                   paste0(round(porcentaje*100, 1), "% de la población")
-                                   )), width = 1, alpha = 1) +
+                               tooltip = paste(format(fecha, "%d de %B, %Y"), "\n",
+                                               "Etapa:", etapa, "\n", 
+                                               paste0(round(porcentaje*100, 1), "% de la población")
+                               )), width = 1, alpha = 1) +
       coord_cartesian(ylim = c(0, 100), expand = 0,
                       xlim = c(input$fecha[1], input$fecha[2])) +
       #escalas y tema
@@ -468,22 +465,22 @@ shinyServer(function(input, output, session) {
       g_ejes_cuarentenas +
       g_ajustes_cuarentenas +
       guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 1))
-
-      
-      #escala responsiva para celulares
-      if (input$dimension[1] < 640) {
-        p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 2))
-      } else {
-        p <- p
-      }
+    
+    
+    #escala responsiva para celulares
+    if (input$dimension[1] < 640) {
+      p <- p + guides(fill = guide_legend(override.aes = list(size = 3, alpha = 0.9), nrow = 2))
+    } else {
+      p <- p
+    }
   })
   
   #graficos combinados
-  output$d_pais <- renderPlot({
-    plot_grid(d_pais_movilidad(), d_pais_cuarentena(),
-              ncol = 1, align = "v", 
-              rel_heights = opciones_cowplot)
-  }, res = 90)
+  # output$d_pais <- renderPlot({
+  #   plot_grid(d_pais_movilidad(), d_pais_cuarentena(),
+  #             ncol = 1, align = "v", 
+  #             rel_heights = opciones_cowplot)
+  # }, res = 90)
   
   #ggiraph interactivo
   output$d_pais2 <- renderGirafe({
@@ -498,14 +495,14 @@ shinyServer(function(input, output, session) {
            options = list(
              #opts_hover(css = "opacity:0.1"), 
              opts_tooltip(#use_fill = TRUE,
-                          css = "opacity: 0.7; padding:5px; 
+               css = "opacity: 0.7; padding:5px; 
                           border-radius:2px; border: white 1px solid; 
                           background-color: #0176DE; color: white;
                           font-family: Open Sans;"),
              opts_toolbar(position = "topright", saveaspng = FALSE)))
   })
   
-
+  
   
   #region ----
   d_region_movilidad <- reactive({
@@ -574,30 +571,30 @@ shinyServer(function(input, output, session) {
   })
   
   #graficos combinados
-  output$d_region <- renderPlot({
-    plot_grid(d_region_movilidad(), d_region_cuarentena(),
-              ncol = 1, align = "v", 
-              rel_heights = opciones_cowplot)
-  }, res = 90)
+  # output$d_region <- renderPlot({
+  #   plot_grid(d_region_movilidad(), d_region_cuarentena(),
+  #             ncol = 1, align = "v", 
+  #             rel_heights = opciones_cowplot)
+  # }, res = 90)
   
   #ggiraph
   output$d_region2 <- renderGirafe({
     p <- plot_grid(d_region_movilidad(), d_region_cuarentena(),
-              ncol = 1, align = "v", 
-              rel_heights = opciones_cowplot)
-  
-  girafe(ggobj = p,
-         pointsize = 18,
-         width_svg = 7.5, height_svg = 5,
-         fonts = list(sans = "Open Sans"),
-         options = list(
-           #opts_hover(css = "opacity:0.1"), 
-           opts_tooltip(#use_fill = TRUE,
-             css = "opacity: 0.7; padding:5px; 
+                   ncol = 1, align = "v",
+                   rel_heights = opciones_cowplot)
+    
+    girafe(ggobj = p,
+           pointsize = 18,
+           width_svg = 7.5, height_svg = 5,
+           fonts = list(sans = "Open Sans"),
+           options = list(
+             #opts_hover(css = "opacity:0.1"), 
+             opts_tooltip(#use_fill = TRUE,
+               css = "opacity: 0.7; padding:5px; 
                           border-radius:2px; border: white 1px solid; 
                           background-color: #0176DE; color: white;
                           font-family: Open Sans;"),
-           opts_toolbar(position = "topright", saveaspng = FALSE)))
+             opts_toolbar(position = "topright", saveaspng = FALSE)))
   })
   
   
@@ -677,21 +674,21 @@ shinyServer(function(input, output, session) {
   #ggiraph
   output$d_provincia2 <- renderGirafe({
     p <- plot_grid(d_provincia_movilidad(), d_provincia_cuarentena(),
-              ncol = 1, align = "v", 
-              rel_heights = opciones_cowplot)
-  
-  girafe(ggobj = p,
-         pointsize = 18,
-         width_svg = 7.5, height_svg = 5,
-         fonts = list(sans = "Open Sans"),
-         options = list(
-           #opts_hover(css = "opacity:0.1"), 
-           opts_tooltip(#use_fill = TRUE,
-             css = "opacity: 0.7; padding:5px; 
+                   ncol = 1, align = "v", 
+                   rel_heights = opciones_cowplot)
+    
+    girafe(ggobj = p,
+           pointsize = 18,
+           width_svg = 7.5, height_svg = 5,
+           fonts = list(sans = "Open Sans"),
+           options = list(
+             #opts_hover(css = "opacity:0.1"), 
+             opts_tooltip(#use_fill = TRUE,
+               css = "opacity: 0.7; padding:5px; 
                           border-radius:2px; border: white 1px solid; 
                           background-color: #0176DE; color: white;
                           font-family: Open Sans;"),
-           opts_toolbar(position = "topright", saveaspng = FALSE)))
+             opts_toolbar(position = "topright", saveaspng = FALSE)))
   })
   #—----
   
@@ -844,7 +841,7 @@ shinyServer(function(input, output, session) {
   # })
   
   
-
+  
   
   #casos covid ----
   #descargar datos covid 
@@ -863,8 +860,8 @@ shinyServer(function(input, output, session) {
     covid_diarios %>% 
       filter(fecha >= input$fecha[1], 
              fecha <= input$fecha[2]) %>% 
-    group_by(fecha) %>% 
-    summarize(casos = sum(casos, na.rm = T))
+      group_by(fecha) %>% 
+      summarize(casos = sum(casos, na.rm = T))
   })
   
   #covid región
@@ -872,8 +869,8 @@ shinyServer(function(input, output, session) {
     covid_diarios %>% 
       filter(fecha >= input$fecha[1], 
              fecha <= input$fecha[2]) %>% 
-    group_by(fecha, region) %>% 
-    summarize(casos = sum(casos, na.rm = T)) %>% 
+      group_by(fecha, region) %>% 
+      summarize(casos = sum(casos, na.rm = T)) %>% 
       mutate(region = recode(region,
                              "Antofagasta"                        = "Antofagasta",
                              "Arica y Parinacota"                 = "Arica y Parinacota",
@@ -891,19 +888,19 @@ shinyServer(function(input, output, session) {
                              "Nuble"                              = "Ñuble",
                              "Tarapaca"                           = "Tarapacá",
                              "Valparaiso"                         = "Valparaíso")) %>% 
-    filter(region == input$region) #filtrar
+      filter(region == input$region) #filtrar
   })
-
+  
   
   #covid provincia
   covid_provincia <- reactive({
     covid_diarios %>% 
-    left_join(provincias_comunas %>% select(comuna, provincia)) %>% 
-    filter(fecha >= input$fecha[1], 
-           fecha <= input$fecha[2]) %>% 
-    group_by(fecha, provincia) %>% 
-    summarize(casos = sum(casos, na.rm = T)) %>% 
-    filter(provincia == input$provincia) #filtrar
+      left_join(provincias_comunas %>% select(comuna, provincia)) %>% 
+      filter(fecha >= input$fecha[1], 
+             fecha <= input$fecha[2]) %>% 
+      group_by(fecha, provincia) %>% 
+      summarize(casos = sum(casos, na.rm = T)) %>% 
+      filter(provincia == input$provincia) #filtrar
   })
   
   
@@ -930,100 +927,100 @@ shinyServer(function(input, output, session) {
   
   lista_descargas <- reactive({
     list(
-    "Movilidad país" = pais() %>% select(-region, -provincia, -provincia_cod),
-    "Movilidad región" = region() %>% select(-provincia_cod, -provincia, region = unidad),
-    "Movilidad provincia" = provincia() %>% select(-provincia_cod, provincia = unidad),
-    "Cuarentenas país" = cuarentenas_pais,
-    "Cuarentenas región" = cuarentenas_region_f(),
-    "Cuarentenas provincia" = cuarentenas_provincia_f()
+      "Movilidad país" = pais() %>% select(-region, -provincia, -provincia_cod),
+      "Movilidad región" = region() %>% select(-provincia_cod, -provincia, region = unidad),
+      "Movilidad provincia" = provincia() %>% select(-provincia_cod, provincia = unidad),
+      "Cuarentenas país" = cuarentenas_pais,
+      "Cuarentenas región" = cuarentenas_region_f(),
+      "Cuarentenas provincia" = cuarentenas_provincia_f()
     )
   })
-    
+  
   
   output$descarga <- downloadHandler(
     filename = paste0("Movilidad Google ", lubridate::today(), ".xlsx"),
     content = function(filename) {
       writexl::write_xlsx(
-      #openxlsx::write.xlsx(
+        #openxlsx::write.xlsx(
         x = lista_descargas(), path = filename
       )
-        #colWidths = "auto", borders = "surrounding"
-        #headerStyle = openxlsx::createStyle(textDecoration = "BOLD", fontName = "Arial")) 
-      }, 
+      #colWidths = "auto", borders = "surrounding"
+      #headerStyle = openxlsx::createStyle(textDecoration = "BOLD", fontName = "Arial")) 
+    }, 
     contentType = "application/xlsx")
   
   
   
   #tabla
   
-#   #provincias mayor movilidad
-#   output$tabla_mayor_movilidad <- formattable::renderFormattable({
-#     movilidad %>% 
-#       ungroup() %>% 
-#       filter(!is.na(provincia)) %>%  #filtrar regiones
-#       #filter(sector == "Mercadería y farmacia") %>% 
-#       filter(fecha == max(fecha)) %>%  #ultima fecha
-#       group_by(sector) %>% 
-#       arrange(desc(valor)) %>% 
-#       mutate(id = 1:n()) %>% 
-#       filter(id == 1) %>% 
-#       select(Provincia = provincia, Región = region, 
-#              Sector = sector, Movilidad=valor) %>% 
-#       formattable(
-#         align = c("l", "l", "l", "c"),
-#         list(
-#           Provincia = formatter("span", style = ~ style(font.style = "bold")),
-#           area(col = "Movilidad") ~ custom_color_tile(gris_claro, gris_oscuro)
-#           #area(col = "Movilidad") ~ color_text("white")
-#           #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
-#         )
-#       )
-#   })
-#   
-#   
-#   #movilidad promedio sectores
-#   output$tabla_sectores_mayor <- formattable::renderFormattable({
-#   movilidad %>% 
-#     ungroup() %>% 
-#     filter(!is.na(provincia)) %>%  #filtrar regiones
-#     filter(fecha == max(fecha)) %>% #ultima fecha
-#     group_by(sector) %>% 
-#     summarize(valor = round(mean(valor, na.rm = T), 1)) %>% 
-#     arrange(desc(valor)) %>% 
-#     select(Sector = sector,
-#            Movilidad = valor) %>% 
-#     formattable(
-#       align = c("l", "c"),
-#       list(
-#         Sector = formatter("span", style = ~ style(font.weight = "bold")),
-#         area(col = "Movilidad") ~ custom_color_tile(gris_claro, gris_oscuro)
-#         #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
-#       )
-#     )
-#   })
-#   
-#   #movilidad promedio por región
-#   output$tabla_regiones_mayor <- formattable::renderFormattable({
-#   movilidad %>% 
-#     ungroup() %>% 
-#     filter(!is.na(region)) %>%  #filtrar regiones
-#     filter(is.na(provincia)) %>%  #filtrar regiones
-#     filter(fecha == max(fecha)) %>% #ultima fecha
-#     group_by(region) %>% 
-#     summarize(valor = round(mean(valor, na.rm = T), 1)) %>% 
-#     arrange(desc(valor)) %>% 
-#       select(Región = region, 
-#              Movilidad = valor) %>% 
-#       formattable(
-#         align = c("l", "c"),
-#         list(
-#           #Región = formatter("span", style = ~ style(font.weight = "bold")),
-#           area(col = "Movilidad") ~ custom_color_tile(gris_claro, gris_oscuro)
-#           #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
-#         )
-#       )
-#       
-# })
+  #   #provincias mayor movilidad
+  #   output$tabla_mayor_movilidad <- formattable::renderFormattable({
+  #     movilidad %>% 
+  #       ungroup() %>% 
+  #       filter(!is.na(provincia)) %>%  #filtrar regiones
+  #       #filter(sector == "Mercadería y farmacia") %>% 
+  #       filter(fecha == max(fecha)) %>%  #ultima fecha
+  #       group_by(sector) %>% 
+  #       arrange(desc(valor)) %>% 
+  #       mutate(id = 1:n()) %>% 
+  #       filter(id == 1) %>% 
+  #       select(Provincia = provincia, Región = region, 
+  #              Sector = sector, Movilidad=valor) %>% 
+  #       formattable(
+  #         align = c("l", "l", "l", "c"),
+  #         list(
+  #           Provincia = formatter("span", style = ~ style(font.style = "bold")),
+  #           area(col = "Movilidad") ~ custom_color_tile(gris_claro, gris_oscuro)
+  #           #area(col = "Movilidad") ~ color_text("white")
+  #           #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
+  #         )
+  #       )
+  #   })
+  #   
+  #   
+  #   #movilidad promedio sectores
+  #   output$tabla_sectores_mayor <- formattable::renderFormattable({
+  #   movilidad %>% 
+  #     ungroup() %>% 
+  #     filter(!is.na(provincia)) %>%  #filtrar regiones
+  #     filter(fecha == max(fecha)) %>% #ultima fecha
+  #     group_by(sector) %>% 
+  #     summarize(valor = round(mean(valor, na.rm = T), 1)) %>% 
+  #     arrange(desc(valor)) %>% 
+  #     select(Sector = sector,
+  #            Movilidad = valor) %>% 
+  #     formattable(
+  #       align = c("l", "c"),
+  #       list(
+  #         Sector = formatter("span", style = ~ style(font.weight = "bold")),
+  #         area(col = "Movilidad") ~ custom_color_tile(gris_claro, gris_oscuro)
+  #         #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
+  #       )
+  #     )
+  #   })
+  #   
+  #   #movilidad promedio por región
+  #   output$tabla_regiones_mayor <- formattable::renderFormattable({
+  #   movilidad %>% 
+  #     ungroup() %>% 
+  #     filter(!is.na(region)) %>%  #filtrar regiones
+  #     filter(is.na(provincia)) %>%  #filtrar regiones
+  #     filter(fecha == max(fecha)) %>% #ultima fecha
+  #     group_by(region) %>% 
+  #     summarize(valor = round(mean(valor, na.rm = T), 1)) %>% 
+  #     arrange(desc(valor)) %>% 
+  #       select(Región = region, 
+  #              Movilidad = valor) %>% 
+  #       formattable(
+  #         align = c("l", "c"),
+  #         list(
+  #           #Región = formatter("span", style = ~ style(font.weight = "bold")),
+  #           area(col = "Movilidad") ~ custom_color_tile(gris_claro, gris_oscuro)
+  #           #area(col = "Tasa") ~ color_tile("#f4e4f4", "#c8b1de")
+  #         )
+  #       )
+  #       
+  # })
   
   # output$Tabla <- DT::renderDataTable({
   #   table <- covid_activos_f()
@@ -1056,8 +1053,9 @@ shinyServer(function(input, output, session) {
   #             filter = list(position = 'top'))
   # })
   
-  #ventana ----
+  #ventanas ----
   
+  #ayuda ----
   observeEvent(input$ayuda, {
     shinyWidgets::sendSweetAlert(
       session = session,
@@ -1086,5 +1084,87 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  
+  #notas técnicas ----
+  observeEvent(input$notas_t, {
+    shinyWidgets::sendSweetAlert(
+      session = session,
+      title = "Notas técnicas",
+      btn_colors = celeste,
+      btn_labels = "Volver",
+      closeOnClickOutside = TRUE,
+      showCloseButton = TRUE,
+      text = list(
+        h2("Somos"),
+        p("Data UC es la unidad de transferencia tecnológica de la Facultad de Matemáticas de la Pontificia Universidad Católica de Chile, cuya misión es aportar con el desarrollo de aplicaciones innovadoras en el ámbito de la ciencia de datos que contribuyan con el desarrollo del país y sus habitantes.", class = "body"),
+        p("El Núcleo Milenio MiDaS es un centro que realiza investigación fundamental sobre modelos estadísticos no paramétricos. Los investigadores de MiDaS se dedican al desarrollo de nuevos enfoques estadísticos para la identificación, reconstrucción y clasificación eficiente de información estructural relevante en conjuntos de datos complejos."),
+        
+        h2("Objetivo"),
+        p("El objetivo de la presente interfaz es facilitar a los ciudadanos la comprensión del impacto de las medidas restrictivas del plan paso a paso en la movilidad de la población. Esta plataforma busca democratizar el acceso a los datos y presentarlos de forma didáctica para que la población esté plenamente informada y pueda efectuar análisis, comparar la situación en las regiones donde viven y obtener conclusiones relevantes."),
+        
+        h2("Recursos abiertos"),
+        p("Todos los recursos gráficos aquí presentados se encuentran a disposición para el uso libre por parte de las comunidades científicas, medios de comunicación y la comunidad en general."),
+        
+        h2("Fuentes de información"),
+        p("Los datos son obtenidos y procesados desde el", tags$a(href="https://www.google.com/covid19/mobility/", "Google Mobility Report"), "y el", tags$a(href="https://github.com/MinCiencia/Datos-COVID19", "repositorio de datos del Ministerio de Ciencias.")),
+        
+        h2("Consideraciones técnicas"),
+        
+        p("La plataforma fue desarrollada utilizando el software R y su aplicación de visualización Shiny. Todos los datos son obtenidos en tiempo real de los repositorios de la Mesa de Datos y de Google Mobility Report, por lo que la información se actualiza en función de dichas publicaciones."),
+        
+        h2("Equipo realizador"),
+  p("Alejandro Jara Vallejos"),
+  p("Mauricio Castro Cepero"),
+  p("Alexis Alvear Leyton"),
+  p("Bastián Olea Herrera"),
+  p("Sebastián Massa Slimming")
+      ),
+      html = T
+    )
+  })
+  #notas metodológicas ----
+  observeEvent(input$notas_m, {
+    shinyWidgets::sendSweetAlert(
+      session = session,
+      title = "Notas metodológicas",
+      btn_colors = celeste,
+      btn_labels = "Volver",
+      closeOnClickOutside = TRUE,
+      showCloseButton = TRUE,
+      text = list(
+        h2("¿Cómo interpretar los datos?"),
+        p("Los Informes de Movilidad Local muestran las tendencias de movilidad por región, categoría y lugar."),
+        p("En los diferentes gráficos encontrará dos registros:"),
+        p(strong("Número principal:"), "sirve para comparar la movilidad en la fecha seleccionada con la movilidad en el día del valor de referencia."),
+        p(strong("Gráfico de tendencia:"), "muestra los cambios porcentuales durante las 6 semanas anteriores a la fecha seleccionada."),
+        
+        h2("¿Cuál es el valor de referencia?"),
+        p("Los datos muestran cómo cambia la cantidad de visitantes en los lugares categorizados (o el tiempo que pasan en ellos) en comparación con un día de referencia, que representa el valor medio del periodo de 5 semanas comprendido entre el 3 de enero y el 6 de febrero del 2020."),
+        
+        h2("Disclaimer"),
+        p("En cada región-categoría, el valor de referencia no es un valor único, sino 7 valores individuales. El mismo número de visitantes en dos días diferentes de la semana da lugar a cambios de porcentaje diferentes. Por lo tanto, recomendamos lo siguiente:"),
+        p("No deduzcas que los cambios mayores implican más visitas ni que los cambios menores implican menos visitas."),
+        p("Evita comparar los cambios de un día a otro. Sobre todo, los fines de semana con los días laborables."),
+        p("Puedes revisar más detalles sobre la metodología de Google", tags$a(href="https://support.google.com/covid19-mobility/answer/9824897?hl=es&ref_topic=9822927", "en este enlace")),
+        
+        h2("¿De dónde se obtienen los datos?"),
+        p("Estos informes se crean a partir de conjuntos de datos agregados y anonimizados procedentes de usuarios que han activado el historial de ubicaciones de Google, una opción de las cuentas de Google donde se guardan los sitios que visitan los usuarios con sus dispositivos móviles."),
+        
+        h2("Privacidad de los datos"),
+        p("En la plataforma no se proporciona ninguna información personal identificable sobre la ubicación, contactos ni los movimientos de ninguna persona en ningún momento."),
+        
+        h2("Categorías de lugares"),
+        p("El objetivo es orientar sobre el distanciamiento social. Por ejemplo, los supermercados y las farmacias pertenecen a la misma categoría, ya que suelen considerarse salidas esenciales. Los lugares son agrupados, en función de características similares, en diferentes categorías."),
+        
+        h2("¿Cómo interpretar los gráficos del plan paso a paso?"),
+        p("Dado que la información de movilidad de Google se despliega en un nivel de desagregación provincial, y las medidas del plan a paso, que establecen las restricciones de desplazamiento a la población, son determinadas por el Ministerio de Salud a nivel comunal, en cada uno de los reportes se presentará un gráfico que presenta la proporción de la población que en la fecha del registro se encontraba en las diferentes etapas del plan paso a paso. Este gráfico permite identificar la incidencia de las medidas restrictivas en la movilidad."),
+        
+        h2("¿Cuáles son las etapas del plan paso a paso?"),
+        p("El Plan Paso a Paso es una estrategia gradual para enfrentar la pandemia según la situación sanitaria de cada zona en particular. Se trata de 4 pasos graduales que van desde la Cuarentena hasta la Apertura, con restricciones y obligaciones."),
+        p("El avance o retroceso de un paso a otro está sujeto a indicadores epidemiológicos, red asistencial, indicadores de búsqueda activa y trazabilidad, avance en Plan de Vacunación, entre otros."),
+        p("Puedes revisar las restricciones y condiciones vigentes de las diferentes etapas del plan paso a paso", tags$a(href="https://www.gob.cl/coronavirus/pasoapaso/", "en el siguiente sitio."))
+      ),
+      html = T
+    )
+  })
 })
-    
